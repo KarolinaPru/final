@@ -24,6 +24,8 @@ public class Game {
 
     public void startGame() {
 
+        //TODO
+        // player 0 jest adminem gry i moze ja rozpoczac
 
     }
 
