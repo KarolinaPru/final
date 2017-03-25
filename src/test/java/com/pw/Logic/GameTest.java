@@ -4,11 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.ArrayList;
 
 /**
  * Created by Karolina on 25.03.2017.
@@ -18,6 +15,12 @@ public class GameTest {
 
     @Mock
     private PlayerInterface fakeGameAdmin;
+    @Mock
+    private PlayerInterface fakePlayer1;
+    @Mock
+    private PlayerInterface fakePlayer2;
+    @Mock
+    private PlayerInterface fakePlayer3;
     @Mock
     private Category fakeCategory;
 
@@ -59,19 +62,47 @@ public class GameTest {
     @Test
     public void GivenCreatedGameWithGameAdmin_WhenNewPlayersAreJoining_ThenTheyShouldBeAddedToListOfGamePlayers() {
 
-        Game game = new Game(fakeGameAdmin, fakeCategory);
-        PlayerInterface player2 = new Player("Player 2");
-        PlayerInterface player3 = new Player("Player 3");
-
-        game.addPlayer(player2);
-        game.addPlayer(player3);
+        Game game = arrangeGameOfAdminAndTwoPlayers();
 
         assertThat(game.getPlayers().get(0).equals(fakeGameAdmin));
-        assertThat(game.getPlayers().get(1).equals(player2));
-        assertThat(game.getPlayers().get(2).equals(player3));
+        assertThat(game.getPlayers().get(1).equals(fakePlayer1));
+        assertThat(game.getPlayers().get(2).equals(fakePlayer2));
 
     }
 
+    @Test
+    public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
+
+        Game game = arrangeGameOfAdminAndTwoPlayers();
+        game.addPlayer(fakePlayer3);
+
+        int playersBeforeRemoval = game.getPlayers().size();
+
+        game.removePlayer(fakePlayer2);
+        int playersAfterRemoval = game.getPlayers().size();
+
+        assertThat(playersBeforeRemoval).isEqualTo(4);
+        assertThat(playersAfterRemoval).isEqualTo(3);
+        assertThat(game.getPlayers()).doesNotContain(fakePlayer2);
+
+    }
+
+    @Test
+    public void GivenGameWithoutAdmin_WhenStarting_ThenGameShouldNotStart() {
+        Game game = arrangeGameOfAdminAndTwoPlayers();
+
+        game.removePlayer(fakeGameAdmin);
+        game.start();
+
+        assertThat(game.isStarted()).isFalse();
+    }
 
 
+    private Game arrangeGameOfAdminAndTwoPlayers() {
+        Game game = new Game(fakeGameAdmin, fakeCategory);
+
+        game.addPlayer(fakePlayer1);
+        game.addPlayer(fakePlayer2);
+        return game;
+    }
 }

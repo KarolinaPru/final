@@ -12,7 +12,6 @@ import java.util.*;
 @Data
 public class Game {
 
-    private boolean isActive;
     @NonNull
     private PlayerInterface gameAdmin;
     @NonNull
@@ -32,18 +31,27 @@ public class Game {
 
     }
 
-
-
-    public void start() {
-
-
-        isStarted = true;
-    }
-
-
     public ArrayList<PlayerInterface> addPlayer(PlayerInterface player) {
         players.add(player);
 
         return players;
     }
+
+    public ArrayList<PlayerInterface> removePlayer(PlayerInterface fakePlayer2) {
+        players.remove(fakePlayer2);
+
+        return players;
+    }
+
+
+
+    public void start() {
+
+        if(players.contains(gameAdmin)) {
+            isStarted = true;
+        }
+
+        isStarted = false;
+    }
+
 }
