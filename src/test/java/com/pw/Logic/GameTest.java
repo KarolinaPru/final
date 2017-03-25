@@ -1,66 +1,51 @@
 package com.pw.Logic;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Before;
 import org.junit.Test;
-
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Karolina on 25.03.2017.
  */
 public class GameTest {
+    private ArrayList<QuestionInterface> noQuestions;
+    private ArrayList<PlayerInterface> noPlayers;
 
-
+    @Before
+    public void setup() {
+        noQuestions = new ArrayList<>();
+        noPlayers = new ArrayList<>();
+    }
 
     @Test
-    public void getQuestions_GivenAListOfQuestions_WhenCalled_Then10RandomAreReturned() {
+    public void GivenPlayersAndQuestions_WhenGameInstatiated_ThenItShouldBeCreated() {
 
-        Category category1 = new Category("Category 1");
+        Game gameOne = new Game(noPlayers, noQuestions);
+        assertThat(gameOne).isNotNull();
 
-       ArrayList<Answer> answers1 = new ArrayList<>();
-       answers1.add(new Answer("A", true));
-       answers1.add(new Answer("B", false));
-       answers1.add(new Answer("C", false));
-       answers1.add(new Answer("D", false));
+    }
 
+    @Test
+    public void GivenAtLeastOnePlayer_WhenStartingGame_ThenItShouldBeStarted(){
+        ArrayList<PlayerInterface> onePlayer = new ArrayList<>();
+        onePlayer.add(new Player("Player 1"));
 
-       Question question1 = Question.builder()
-               .category(category1)
-               .question("Question 1")
-               .answerOptions(answers1)
-               .id(1)
-               .build();
+        Game game = new Game(onePlayer, noQuestions);
+        game.start();
 
-       Question question2 = Question.builder()
-               .category(category1)
-               .question("Question 2")
-               .answerOptions(answers1)
-               .id(2)
-               .build();
+        assertThat(game.isStarted).isTrue();
 
-       Question question3 = Question.builder()
-                .category(category1)
-                .question("Question 3")
-                .answerOptions(answers1)
-                .id(3)
-                .build();
+    }
 
-       Question question4 = Question.builder()
-                .category(category1)
-                .question("Question 4")
-                .answerOptions(answers1)
-                .id(4)
-                .build();
+    @Test
+    public void GivenNoPlayers_WhenStartingGame_ThenItShouldNotBeStarted(){
 
+        Game game = new Game(noPlayers, noQuestions);
+        game.start();
 
-        ArrayList<QuestionInterface> allQuestions = new ArrayList<>();
-        allQuestions.add(question1);
-        allQuestions.add(question2);
-        allQuestions.add(question3);
-        allQuestions.add(question4);
-
-
+        assertThat(game.isStarted).isFalse();
 
     }
 

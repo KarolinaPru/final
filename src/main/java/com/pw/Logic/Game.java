@@ -17,16 +17,22 @@ public class Game {
     private boolean isActive;
     private ArrayList<PlayerInterface> players;
     private ArrayList<QuestionInterface> questions;
+    public boolean isStarted;
 
     //private Timer timer;
 
+    public Game (ArrayList<PlayerInterface> players, ArrayList<QuestionInterface> questions) {
+        this.players = players;
+        this.questions = questions;
+    }
 
 
-    public void startGame() {
 
-        //TODO
-        // player 0 jest adminem gry i moze ja rozpoczac
+    public void start() {
+        if(players.size() > 0) {
 
+        isStarted = true;
+        }
     }
 
     public ArrayList<QuestionInterface> getQuestions (ArrayList<Question> allQuestionsFromCategory) {

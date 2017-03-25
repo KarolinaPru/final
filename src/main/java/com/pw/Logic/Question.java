@@ -11,7 +11,6 @@ import java.util.ArrayList;
 @Data
 @Builder
 public class Question implements QuestionInterface {
-    private int id;
     private Category category;
     private String question;
     private ArrayList<Answer> answerOptions;
