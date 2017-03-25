@@ -8,7 +8,7 @@ import lombok.Data;
  */
 
 @Data
-public class Player {
+public class Player implements PlayerInterface {
 
     private String name;
     private static int id;

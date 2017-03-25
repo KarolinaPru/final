@@ -14,11 +14,11 @@ import java.util.Timer;
 @Data
 public class Game {
 
-    private Category category;
-    private ArrayList<Player> players;
-    private ArrayList<Question> questions;
+    private boolean isActive;
+    private ArrayList<PlayerInterface> players;
+    private ArrayList<QuestionInterface> questions;
 
-    private Timer timer;
+    //private Timer timer;
 
 
 
@@ -29,7 +29,7 @@ public class Game {
 
     }
 
-    private ArrayList<Question> getQuestions (ArrayList<Question> allQuestionsFromCategory) {
+    public ArrayList<QuestionInterface> getQuestions (ArrayList<Question> allQuestionsFromCategory) {
         Random random = new Random();
         Question q;
 
