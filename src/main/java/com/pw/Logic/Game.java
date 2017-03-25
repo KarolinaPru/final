@@ -1,11 +1,9 @@
 package com.pw.Logic;
 
 import lombok.Data;
+import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Timer;
+import java.util.*;
 
 /**
  * Created by Karolina on 24.03.2017.
@@ -15,44 +13,37 @@ import java.util.Timer;
 public class Game {
 
     private boolean isActive;
-    private ArrayList<PlayerInterface> players;
+    @NonNull
+    private PlayerInterface gameAdmin;
+    @NonNull
+    Category category;
+    private ArrayList<PlayerInterface> players = new ArrayList<>();
     private ArrayList<QuestionInterface> questions;
-    public boolean isStarted;
+    private boolean isStarted;
 
-    //private Timer timer;
 
-    public Game (ArrayList<PlayerInterface> players, ArrayList<QuestionInterface> questions) {
-        this.players = players;
-        this.questions = questions;
+    public Game (PlayerInterface gameAdmin, Category category) {
+        if(gameAdmin == null || category == null) {
+            throw new IllegalArgumentException("The game cannot be initiated without the game admin and a category.");
+        }
+        this.gameAdmin = gameAdmin;
+        this.category = category;
+        players.add(gameAdmin);
+
     }
 
 
 
     public void start() {
-        if(players.size() > 0) {
+
 
         isStarted = true;
-        }
-    }
-
-    public ArrayList<QuestionInterface> getQuestions (ArrayList<Question> allQuestionsFromCategory) {
-        Random random = new Random();
-        Question q;
-
-        if (allQuestionsFromCategory.size() >= 10) {
-
-            for (int i = 0; i < 10; i++) {
-
-                q = allQuestionsFromCategory.get(random.nextInt(allQuestionsFromCategory.size()));
-                questions.add(q);
-
-            }
-
-        }
-
-        return questions;
     }
 
 
+    public ArrayList<PlayerInterface> addPlayer(PlayerInterface player) {
+        players.add(player);
 
+        return players;
+    }
 }
