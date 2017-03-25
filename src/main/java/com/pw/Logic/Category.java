@@ -11,28 +11,28 @@ import java.util.Random;
 @Data
 public class Category {
     private String category;
+    private ArrayList<QuestionInterface> allQuestionsFromCategory;
     private ArrayList<QuestionInterface> randomQuestions;
 
     public Category (String category) {
         this.category = category;
     }
 
+    private ArrayList<QuestionInterface> addQuestionsToCategory() {
+        ArrayList<AnswerInterface> answers = new ArrayList<>();
+        answers.add(new Answer("1", false));
+        answers.add(new Answer("2", true));
+        answers.add(new Answer("3", false));
+        answers.add(new Answer("4", false));
 
-    public ArrayList<QuestionInterface> getRandomQuestions(ArrayList<Question> allQuestionsFromCategory) {
-        Random random = new Random();
-        Question question;
-
-        if (allQuestionsFromCategory.size() >= 10) {
-
-            for (int i = 0; i < 10; i++) {
-
-                question = allQuestionsFromCategory.get(random.nextInt(allQuestionsFromCategory.size()));
-                randomQuestions.add(question);
-
-            }
+        for (int i = 0; i < 100; i++) {
+           QuestionInterface question = new Question(this, "question" + i, answers);
+           allQuestionsFromCategory.add(question);
 
         }
 
-        return randomQuestions;
+        return allQuestionsFromCategory;
     }
+
+
 }

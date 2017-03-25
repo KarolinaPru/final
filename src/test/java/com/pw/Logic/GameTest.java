@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
 
 /**
  * Created by Karolina on 25.03.2017.
@@ -23,6 +26,11 @@ public class GameTest {
     private PlayerInterface fakePlayer3;
     @Mock
     private Category fakeCategory;
+    @Mock
+    private ArrayList<QuestionInterface> fakeQuestions;
+
+    @InjectMocks
+    private Game game;
 
 
     @Test
@@ -46,16 +54,6 @@ public class GameTest {
 
         Game gameOne = new Game(fakeGameAdmin, fakeCategory);
         assertThat(gameOne).isNotNull();
-
-    }
-
-    @Test
-    public void GivenGameAdmin_WhenStartingGame_ThenItShouldBeStarted(){
-
-        Game game = new Game(fakeGameAdmin, fakeCategory);
-        game.start();
-
-        assertThat(game.isStarted()).isTrue();
 
     }
 
@@ -96,6 +94,28 @@ public class GameTest {
 
         assertThat(game.isStarted()).isFalse();
     }
+
+    @Test
+    public void GivenCategoryWithNoQuestions_WhenStarting_ThenIllegalArgumentExceptionShouldBeThrown() {
+        Game game = arrangeGameOfAdminAndTwoPlayers();
+
+        assertThatThrownBy(() -> game.start())
+                .isInstanceOf(IllegalArgumentException.class);
+
+
+    }
+
+//    @Test
+//    public void GivenGameAdminAndQuestionsInCategory_WhenStartingGame_ThenItShouldBeStarted(){
+//
+//        Game game = new Game(fakeGameAdmin, fakeCategory);
+//        game.setQuestions(fakeQuestions);
+//        game.start();
+//
+//        assertThat(game.getQuestions()).isNotEmpty();
+//        assertThat(game.isStarted()).isTrue();
+//
+//    }
 
 
     private Game arrangeGameOfAdminAndTwoPlayers() {

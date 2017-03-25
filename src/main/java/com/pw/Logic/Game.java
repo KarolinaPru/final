@@ -44,14 +44,39 @@ public class Game {
     }
 
 
-
     public void start() {
 
         if(players.contains(gameAdmin)) {
-            isStarted = true;
+
+        questions = category.getAllQuestionsFromCategory();
+
+            if(!questions.isEmpty()) {
+                isStarted = true;
+            } else {
+                throw new IllegalArgumentException("There are not enough questions in this category.  Please choose another one or add them.");
+            }
         }
 
         isStarted = false;
     }
+
+//    public ArrayList<QuestionInterface> getRandomQuestions() {
+//        ArrayList<QuestionInterface> allQuestionsFromCategory = category.getAllQuestionsFromCategory();
+//
+//        Random random = new Random();
+//        QuestionInterface question;
+//
+//        if (allQuestionsFromCategory.size() >= 10) {
+//
+//            for (int i = 0; i < 10; i++) {
+//
+//                question = allQuestionsFromCategory.get(random.nextInt(allQuestionsFromCategory.size()));
+//                questions.add(question);
+//
+//                }
+//            }
+//
+//            return questions;
+//    }
 
 }

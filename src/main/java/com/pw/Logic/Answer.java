@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by Karolina on 25.03.2017.
  */
 @Data
-public class Answer {
+public class Answer implements AnswerInterface {
     private String answer;
     private boolean isCorrect;
 
