@@ -14,8 +14,9 @@ public enum Category {
     MISCELLANEOUS ("Miscellaneous");
 
 
-    Category(String category) {
-
+    Category(String name) {
+        this.name = name;
     }
 
+    private String name;
 }

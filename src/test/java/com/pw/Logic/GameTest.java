@@ -1,16 +1,13 @@
 package com.pw.Logic;
 
 import static org.assertj.core.api.Assertions.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.testng.annotations.BeforeTest;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,14 +17,13 @@ import java.util.List;
 public class GameTest {
 
     @Mock
-    private Player fakeGameAdmin;
+    private Player gameAdmin;
     @Mock
-    private Player fakePlayer1;
+    private Player player1;
     @Mock
-    private Player fakePlayer2;
+    private Player player2;
     @Mock
-    private Player fakePlayer3;
-
+    private Player player3;
     @Mock
     private List<Question> questions;
     @Mock
@@ -44,7 +40,7 @@ public class GameTest {
     @Test
     public void GivenNoCategory_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new GameImpl(fakeGameAdmin, null, questionService))
+        assertThatThrownBy(() -> new GameImpl(gameAdmin, null, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -52,7 +48,7 @@ public class GameTest {
     @Test
     public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
-        GameImpl gameOne = new GameImpl(fakeGameAdmin, Category.ARTS, questionService);
+        GameImpl gameOne = new GameImpl(gameAdmin, Category.ARTS, questionService);
         assertThat(gameOne).isNotNull();
 
     }
@@ -62,9 +58,9 @@ public class GameTest {
 
         GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
-        assertThat(game.getPlayers().get(0).equals(fakeGameAdmin));
-        assertThat(game.getPlayers().get(1).equals(fakePlayer1));
-        assertThat(game.getPlayers().get(2).equals(fakePlayer2));
+        assertThat(game.getPlayers().get(0).equals(gameAdmin));
+        assertThat(game.getPlayers().get(1).equals(player1));
+        assertThat(game.getPlayers().get(2).equals(player2));
 
     }
 
@@ -72,16 +68,15 @@ public class GameTest {
     public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
 
         GameImpl game = arrangeGameOfAdminAndTwoPlayers();
-        game.addPlayer(fakePlayer3);
-
+        game.addPlayer(player3);
         int playersBeforeRemoval = game.getPlayers().size();
 
-        game.removePlayer(fakePlayer2);
+        game.removePlayer(player2);
         int playersAfterRemoval = game.getPlayers().size();
 
         assertThat(playersBeforeRemoval).isEqualTo(4);
         assertThat(playersAfterRemoval).isEqualTo(3);
-        assertThat(game.getPlayers()).doesNotContain(fakePlayer2);
+        assertThat(game.getPlayers()).doesNotContain(player2);
 
     }
 
@@ -89,29 +84,67 @@ public class GameTest {
     public void GivenGameWithoutAdmin_WhenStarting_ThenGameShouldNotStart() {
         GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
-        game.removePlayer(fakeGameAdmin);
+        game.removePlayer(gameAdmin);
         game.start();
 
         assertThat(game.isStarted()).isFalse();
     }
 
     @Test
-    public void GivenGameAdminAndQuestionsInCategory_WhenStartingGame_ThenItShouldBeStarted(){
+    public void GivenFewerThan10Questions_WhenStartingGame_ThenItShouldNotStart(){
 
-        Mockito.when(questionService.getQuestions(Mockito.any())).thenReturn(questions);
-        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS, questionService);
+        Mockito.when(questions.size()).thenReturn(9);
+        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+
+        game.start();
+
+        assertThat(game.isStarted()).isFalse();
+    }
+
+    @Test
+    public void GivenNullListOfQuestions_WhenStartingGame_ThenItShouldNotStart(){
+
+        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(null);
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+
+        game.start();
+
+        assertThat(game.isStarted()).isFalse();
+    }
+
+    @Test
+    public void GivenGameAdminAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart(){
+
+        GameImpl game = arrangeGameConditions();
 
         game.start();
 
         assertThat(game.isStarted()).isTrue();
     }
 
+    @Test
+    public void GivenGameConditionsArranged_WhenStarting_ThenStartTimeShouldBeAssigned() {
+        GameImpl game = arrangeGameConditions();
+
+        game.start();
+
+        assertThat(game).hasFieldOrProperty("startTime");
+        assertThat(game.getStartTime()).isNotNull();
+
+    }
+
+    private GameImpl arrangeGameConditions() {
+        Mockito.when(questions.size()).thenReturn(10);
+        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
+        return arrangeGameOfAdminAndTwoPlayers();
+    }
 
     private GameImpl arrangeGameOfAdminAndTwoPlayers() {
-        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS, questionService);
+        GameImpl game = new GameImpl(gameAdmin, Category.MISCELLANEOUS, questionService);
 
-        game.addPlayer(fakePlayer1);
-        game.addPlayer(fakePlayer2);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
         return game;
     }
 }

@@ -1,6 +1,7 @@
 package com.pw.Logic;
 
 import javafx.util.Pair;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,27 +11,33 @@ import java.util.Random;
  * Created by Karolina on 26.03.2017.
  */
 public class QuestionServiceHardcoded implements QuestionService {
-    private ArrayList<Question> questions;
-    private List<Question> allQuestions;
+
     private Random random = new Random();
 
     @Override
-    public List<Question> getQuestions(Category category) {
-        allQuestions = addQuestions(Category.MISCELLANEOUS);
+    public List<Question> get10RandomQuestions(Category category) {
+        List<Question> questions = new ArrayList<>();
+
+
+        List<Question> allQuestions = createQuestions(Category.MISCELLANEOUS);
         int size = allQuestions.size();
 
         Question q;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             q = allQuestions.get(random.nextInt(size));
-            questions.add(q);
+            if(!questions.contains(q)) {
+                questions.add(q);
+            } else {
+                i--;
+            }
         }
 
         return questions;
     }
 
-    public List<Question> addQuestions(Category category) {
-        allQuestions = new ArrayList<>();
+    private List<Question> createQuestions(Category category) {
+        List<Question> allQuestions = new ArrayList<>();
 
         Question question1 = QuestionImpl.builder()
                 .question("Question 1")

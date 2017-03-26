@@ -1,13 +1,16 @@
 package com.pw.Logic;
 
+import groovy.transform.EqualsAndHashCode;
 import javafx.util.Pair;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * Created by Karolina on 24.03.2017.
  */
-@Data
+@Getter
+@EqualsAndHashCode
 @Builder
 public class QuestionImpl implements Question {
     private Category category;

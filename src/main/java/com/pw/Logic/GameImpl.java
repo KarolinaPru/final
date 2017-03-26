@@ -1,26 +1,32 @@
 package com.pw.Logic;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
  * Created by Karolina on 24.03.2017.
  */
 
-@Data
+
 public class GameImpl {
 
     @NonNull
     private Player gameAdmin;
     @NonNull
     private Category category;
-    private ArrayList<Player> players = new ArrayList<>();
+    @Getter
+    private List<Player> players = new ArrayList<>();
     private List<Question> questions;
+    @Getter
     private boolean isStarted;
     @NonNull
     private final QuestionService questionService;
+    @Getter
+    private LocalDateTime startTime;
 
 
     public GameImpl(Player gameAdmin, Category category, QuestionService questionService) {
@@ -35,13 +41,13 @@ public class GameImpl {
 
     }
 
-    public ArrayList<Player> addPlayer(Player player) {
+    public List<Player> addPlayer(Player player) {
         players.add(player);
 
         return players;
     }
 
-    public ArrayList<Player> removePlayer(Player player) {
+    public List<Player> removePlayer(Player player) {
         players.remove(player);
 
         return players;
@@ -49,9 +55,9 @@ public class GameImpl {
 
     public void start() {
 
-        questions = questionService.getQuestions(category);
+        questions = questionService.get10RandomQuestions(category);
 
-        if (questions == null) {
+        if (questions == null || questions.size() < 10) {
             isStarted = false;
             return;
         }
@@ -62,5 +68,6 @@ public class GameImpl {
         }
 
         isStarted = true;
+        startTime = LocalDateTime.now();
     }
 }
