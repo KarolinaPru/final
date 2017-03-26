@@ -1,0 +1,248 @@
+<script type="text/ng-template" id="game_template.html">
+<div>
+  <div ng-show="state" class="game pad-lg">
+    <div ng-hide="state==='ended'">
+      <h3>{{topic.display_name}}</h3>
+      <span class="category-tag" ng-class="topic.category_id">{{topic.category_display_name}}</span>
+    </div>
+
+    <div class="game-loading" ng-show="state==='in_queue'">
+      <div class="waiting">
+        <div>
+          <div>
+            <h3>Waiting for opponents</h3>
+            <i class="fa fa-spinner fa-pulse fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-loading" ng-show="state==='get_ready'">
+      <div class="get-ready">
+        <div>
+          <div>
+            <h3>Get ready</h3>
+            <i class="fa fa-spinner fa-pulse fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div ng-show="state==='started' || state==='ending'">
+      <div class="game-scores">
+        <div class="row">
+          <div class="col-xs-10 col-md-10">
+            <div class="players">
+              <div ng-repeat="player in players | orderBy:sort_players">
+                <div class="player-box" ng-class="player.uid===user.uid ? 'me' : ''">
+                  <div class="profile-picture-container" ng-style="{'background-image':'url({{player.profile_picture_url}})'}">
+                  </div><div class="player-name-container"><span class="player-name">
+                    {{player.display_name}}
+                  </span><span class="player-score">
+                    {{player.score}}
+                  </span><div class="player-progress-bar" ng-class="{'':!timer_started, 'play': (timer_started && (player.this_answered_correctly===undefined || player.this_answered_correctly<0)), 'play pause': player.this_answered_correctly>=0, 'correct':player.this_answered_correctly===1, 'incorrect': player.this_answered_correctly===0}"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-2 col-md-2 text-center">
+            <div class="timer-container">
+              <div class="timer">
+                <timer autostart="false" countdown="10" interval="1000" finish-callback="reveal_answer()">
+                  {{seconds}}
+                </timer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="game-content">
+        <div class="row">
+          <div class="col-md-12">
+            <h5 class="question-number">
+              Question #{{ current_question+1 }} of {{ questions.length }}
+              <a ng-click="report_question(topic.id, questions[current_question].id, user.uid)">
+                <i 
+                  title="Report question as incorrect" 
+                  class="fa fa-flag text-muted" 
+                  ng-class="question_reported ? 'downvote' : ''">
+                </i>
+              </a>
+              <span 
+                class="small submitter-name" 
+                ng-if="questions[current_question].submitter_name">
+              Submitted by {{questions[current_question].submitter_name}}
+              </span>
+            </h5>
+            <h3 class="question" ng-bind-html="questions[current_question].content"></h3>
+            <div ng-show="questions[current_question].type==='image'">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="question-image">
+                    <img class="img-responsive" ng-src="{{questions[current_question].image_source_url}}">
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <div class="answers img-answers" ng-show="show_answers">
+                    <div class="row">
+                      <div class="col-xs-6" ng-repeat="answer in current_answers">
+                        <div class="answer img-answer">
+                          <a ng-bind-html="answer.content" ng-click="select_answer(answer.id)" ng-show="answer_revealed ? (answer.id===questions[current_question].correct_answer || answer.id===selected_answer) : true" ng-class="{'correct': (this_answered && answer.id===selected_answer && answer.id===questions[current_question].correct_answer) || (answer_revealed && answer.id===questions[current_question].correct_answer), 'incorrect': this_answered && answer.id!=questions[current_question].correct_answer && answer.id===selected_answer}">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="questions[current_question].type!=='image'">
+              <div class="answers" ng-show="show_answers">
+                <div class="row">
+                  <div class="col-md-6" ng-repeat="answer in current_answers">
+                    <div class="answer">
+                      <a ng-bind-html="answer.content" ng-click="select_answer(answer.id)" ng-show="answer_revealed ? (answer.id===questions[current_question].correct_answer || answer.id===selected_answer) : true" ng-class="{'correct': (this_answered && answer.id===selected_answer && answer.id===questions[current_question].correct_answer) || (answer_revealed && answer.id===questions[current_question].correct_answer), 'incorrect': this_answered && answer.id!=questions[current_question].correct_answer && answer.id===selected_answer}">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-over" ng-show="state==='ended'">
+      <div class="row">
+        <div class="col-md-3">
+          <h3>{{topic.display_name}}</h3>
+          <span class="category-tag" ng-class="topic.category_id">{{topic.category_display_name}}</span>
+        </div>
+        <div class="col-md-6">
+          <h1 ng-show="position===1">You won!</h1>
+          <h1 ng-show="position===2">You finished 2nd!</h1>
+          <h1 ng-show="position===3">You finished 3rd!</h1>
+          <h1 ng-show="position===4">You finished 4th!</h1>
+        </div>
+      </div>
+      
+      <div ng-repeat="player in local_game.players | orderBy:sort_by_score">
+        <div class="clearfix">
+          <div class="player-box" ng-class="player.uid===user.uid ? 'me' : ''">
+            <div class="profile-picture-container" ng-style="{'background-image':'url({{player.profile_picture_url}})'}">
+            </div><div class="player-name-container"><span class="player-name">
+              {{player.display_name}}
+            </span><span class="player-score">
+              {{player.score}}
+            </span></div>
+          </div>
+        </div>
+      </div>
+      <ul class="list-inline xp">
+        <li ng-class="topic.category_id"><span>Game Score</span><p>{{score}}</p></li>
+        <li ng-class="topic.category_id"><span>Finish Bonus</span><p>{{finishing_bonus}}</p></li>
+        <li ng-class="topic.category_id"><span>Win Bonus</span><p>{{position_bonus}}</p></li>
+        <li ng-class="topic.category_id"><span>Total XP</span><p>{{game_xp}}</p></li>
+      </ul>
+      <ul class="list-inline level">
+        <li ng-show="end_level > start_level">Level <span class="up animated tada">{{end_level}}</span></li>
+        <li ng-show="end_level <= start_level">Level <span class="same">{{end_level}}</span></li>
+      </ul>
+      <div class="level-progress">
+        <uib-progress max="max_xp-min_xp">
+          <uib-bar value="end_xp-min_xp" type="success"></uib-bar>
+        </uib-progress>
+        <div class="xp-message">{{max_xp - end_xp}} XP to next level</div>
+      </div>
+
+      <ul class="list-inline share">
+        <li>Share on</li>
+        <li>
+          <a socialshare socialshare-provider="facebook" socialshare-url="{{game_share_url}}">
+            <span class="fa-stack fa-lg facebook-share">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a socialshare socialshare-provider="google+" socialshare-url="{{game_share_url}}">
+            <span class="fa-stack fa-lg google-share">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a 
+            socialshare 
+            socialshare-provider="twitter" 
+            socialshare-text="Just played #TRIVIUS"
+            socialshare-url="{{game_share_url}}">
+            <span class="fa-stack fa-lg twitter-share">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a clipboard text="game_share_url" uib-popover="Share link copied to clipboard" popover-placement="top">
+            <span class="fa-stack fa-lg link-share">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-link fa-stack-1x fa-inverse"></i>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div>
+        <ul class="list-inline">
+          <li>
+            <a class="btn btn-md btn-primary" ng-click="play_again()">
+              Play again
+            </a>
+          </li>
+          <li>
+            <a class="btn btn-md btn-primary" href="/home">
+              Play another topic
+            </a>
+          </li>
+          <li>
+            <a class="btn btn-md btn-primary" ng-href="/topic/{{topic.category_id}}/{{topic.id}}">
+              Chat and Leaderboard
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="game-loading" ng-show="state==='error'">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <div class="alert alert-danger pad-lg">
+            <h3>Oops, we have a problem!</h3>
+            <p>Switching to other apps during a game is not allowed. You have been removed from the game.</p>
+            <a ng-click="play_again()" class="btn btn-primary">Start new game</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="close-button" ng-show="state==='ended' || state==='error'" ng-click="$back()"><i class="fa fa-times-circle"></i></a>
+  </div>
+</div>
+</script>
+
+<script type="text/ng-template" id="game_badges_template.html">
+  <div class="pad-lg">
+    <h4>You earned badges!</h4>
+    <div class="game-badge text-center pad-lg" ng-repeat="badge in badges_earned">
+      <h3 class="text-uppercase">{{ badge.text }}</h3>
+      <div class="badge-icon-popup">
+        <img width="100" height="100" ng-src="/img/badges/{{badge.id}}.png">
+      </div>
+      <p>{{ badge.description }}</p>
+    </div>
+    <a class="close-button" ng-click="close_badges()"><i class="fa fa-times-circle"></i></a>
+  </div>
+</script>

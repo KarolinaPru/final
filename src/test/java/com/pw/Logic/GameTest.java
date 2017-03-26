@@ -16,7 +16,7 @@ import java.util.List;
 public class GameTest {
 
     @Mock
-    private Player gameAdmin;
+    private Player gameOwner;
     @Mock
     private Player player1;
     @Mock
@@ -38,39 +38,46 @@ public class GameTest {
     @Test
     public void GivenNoCategory_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new GameImpl(gameAdmin, null, questionService))
+        assertThatThrownBy(() -> new GameImpl(gameOwner, null, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
-        GameImpl gameOne = new GameImpl(gameAdmin, Category.ARTS, questionService);
+        GameImpl gameOne = new GameImpl(gameOwner, Category.ARTS, questionService);
         assertThat(gameOne).isNotNull();
     }
 
     @Test
-    public void GivenCreatedGameWithGameAdmin_WhenNewPlayersAreJoining_ThenTheyShouldBeAddedToListOfGamePlayers() {
+    public void GivenCreatedGameWithGameOwner_WhenNewPlayersAreJoining_ThenTheyShouldBeAddedToListOfGamePlayers() {
 
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
-        assertThat(game.getPlayers().get(0).equals(gameAdmin));
+        assertThat(game.getPlayers().get(0).equals(gameOwner));
         assertThat(game.getPlayers().get(1).equals(player1));
         assertThat(game.getPlayers().get(2).equals(player2));
     }
 
     @Test
-    public void GivenAdminAndCategory_WhenCreatingNewGame_ThenIdShouldBeAssignedAndNotBeNull(){
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+    public void GivenOwnerAndCategory_WhenCreatingNewGame_ThenIdShouldBeAssignedAndNotBeNull(){
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
         assertThat(game).hasFieldOrProperty("id");
         assertThat(game.getId()).isNotNull();
     }
 
     @Test
+    public void GivenGameIsCreated_WhenCheckedIfIsOpen_ThenTrueShouldBeReturned(){
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+
+        assertThat(game.isOpen()).isTrue();
+    }
+
+    @Test
     public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
 
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
         game.addPlayer(player3);
         int playersBeforeRemoval = game.getPlayers().size();
 
@@ -83,10 +90,10 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameWithoutAdmin_WhenStarting_ThenGameShouldNotStart() {
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+    public void GivenGameWithoutOwner_WhenStarting_ThenGameShouldNotStart() {
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
-        game.removePlayer(gameAdmin);
+        game.removePlayer(gameOwner);
         game.start();
 
         assertThat(game.isStarted()).isFalse();
@@ -96,7 +103,7 @@ public class GameTest {
     public void GivenFewerThan10Questions_WhenStartingGame_ThenItShouldNotStart(){
 
         arrangeListOf9Questions();
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
         game.start();
 
@@ -107,7 +114,7 @@ public class GameTest {
     public void GivenNullListOfQuestions_WhenStartingGame_ThenItShouldNotStart(){
 
         Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(null);
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
         game.start();
 
@@ -115,7 +122,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameAdminAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart(){
+    public void GivenGameOwnerAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart(){
 
         GameImpl game = arrangePositiveGameConditions();
 
@@ -137,7 +144,7 @@ public class GameTest {
     @Test
     public void GivenGameConditionsAreNotMet_WhenStarting_ThenStartTimeShouldBeNull() {
         arrangeListOf9Questions();
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
         game.start();
 
@@ -145,15 +152,49 @@ public class GameTest {
         assertThat(game.getStartTime()).isNull();
     }
 
+    @Test
+    public void GivenPlayer_WhenEndingGame_ThenPlayerShouldBeRemoved() {
+        GameImpl game = arrangePositiveGameConditions();
+        game.start();
+
+        game.end(player1);
+
+        assertThat(game.getPlayers()).doesNotContain(player1);
+    }
+
+    @Test
+    public void GivenAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenFalseShouldBeReturned() {
+        GameImpl game = arrangePositiveGameConditions();
+        game.start();
+
+        game.end(player1);
+        game.end(player2);
+        game.end(gameOwner);
+
+        assertThat(game.isOpen()).isFalse();
+        assertThat(game.isStarted()).isFalse();
+    }
+
+    @Test
+    public void GivenNotAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenTrueShouldBeReturned() {
+        GameImpl game = arrangePositiveGameConditions();
+        game.start();
+
+        game.end(player1);
+        game.end(gameOwner);
+
+        assertThat(game.isOpen()).isTrue();
+        assertThat(game.isStarted()).isTrue();
+    }
 
     private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
         Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
-        return arrangeGameOfAdminAndTwoPlayers();
+        return arrangeGameOfOwnerAndTwoPlayers();
     }
 
-    private GameImpl arrangeGameOfAdminAndTwoPlayers() {
-        GameImpl game = new GameImpl(gameAdmin, Category.MISCELLANEOUS, questionService);
+    private GameImpl arrangeGameOfOwnerAndTwoPlayers() {
+        GameImpl game = new GameImpl(gameOwner, Category.MISCELLANEOUS, questionService);
 
         game.addPlayer(player1);
         game.addPlayer(player2);

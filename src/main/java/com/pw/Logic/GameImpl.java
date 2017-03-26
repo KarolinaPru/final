@@ -4,18 +4,19 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
  * Created by Karolina on 24.03.2017.
  */
 
+// Odliczanie czasu, wyswietlanie kolejnych pytan i poprawnych odpowiedzi
+// oraz naliczanie punktow za gre beda lezec po stronie przegladarki
 
 public class GameImpl {
 
     @NonNull
-    private Player gameAdmin;
+    private Player gameOwner;
     @NonNull
     private Category category;
     @Getter
@@ -23,6 +24,8 @@ public class GameImpl {
     private List<Question> questions;
     @Getter
     private boolean isStarted;
+    @Getter
+    private boolean isOpen;
     @NonNull
     private final QuestionService questionService;
     @Getter
@@ -31,16 +34,17 @@ public class GameImpl {
     private UUID id;
 
 
-    public GameImpl(Player gameAdmin, Category category, QuestionService questionService) {
-        if(gameAdmin == null || category == null) {
+    public GameImpl(Player gameOwner, Category category, QuestionService questionService) {
+        if(gameOwner == null || category == null) {
             throw new IllegalArgumentException("The game cannot be initiated without the game admin and a category.");
         }
-        this.gameAdmin = gameAdmin;
+        this.gameOwner = gameOwner;
         this.category = category;
         this.questionService = questionService;
 
         id = UUID.randomUUID();
-        players.add(gameAdmin);
+        isOpen = true;
+        players.add(gameOwner);
     }
 
     public List<Player> addPlayer(Player player) {
@@ -64,12 +68,25 @@ public class GameImpl {
             return;
         }
 
-        if(!players.contains(gameAdmin)) {
+        if(!players.contains(gameOwner)) {
             isStarted = false;
             return;
         }
 
         isStarted = true;
         startTime = LocalDateTime.now();
+    }
+
+    public void end(Player player) {
+
+        players = removePlayer(player);
+
+        if (players.size() == 0) {
+            isOpen = false;
+            isStarted = false;
+        } else {
+            isOpen = true;
+            isStarted = true;
+        }
     }
 }
