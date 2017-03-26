@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -65,6 +64,14 @@ public class GameTest {
     }
 
     @Test
+    public void GivenAdminAndCategory_WhenCreatingNewGame_ThenIdShouldBeAssignedAndNotBeNull(){
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+
+        assertThat(game).hasFieldOrProperty("id");
+        assertThat(game.getId()).isNotNull();
+    }
+
+    @Test
     public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
 
         GameImpl game = arrangeGameOfAdminAndTwoPlayers();
@@ -93,8 +100,7 @@ public class GameTest {
     @Test
     public void GivenFewerThan10Questions_WhenStartingGame_ThenItShouldNotStart(){
 
-        Mockito.when(questions.size()).thenReturn(9);
-        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
+        arrangeListOf9Questions();
         GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
         game.start();
@@ -116,7 +122,7 @@ public class GameTest {
     @Test
     public void GivenGameAdminAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart(){
 
-        GameImpl game = arrangeGameConditions();
+        GameImpl game = arrangePositiveGameConditions();
 
         game.start();
 
@@ -124,8 +130,8 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameConditionsArranged_WhenStarting_ThenStartTimeShouldBeAssigned() {
-        GameImpl game = arrangeGameConditions();
+    public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned() {
+        GameImpl game = arrangePositiveGameConditions();
 
         game.start();
 
@@ -134,7 +140,19 @@ public class GameTest {
 
     }
 
-    private GameImpl arrangeGameConditions() {
+    @Test
+    public void GivenGameConditionsAreNotMet_WhenStarting_ThenStartTimeShouldBeNull() {
+        arrangeListOf9Questions();
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
+
+        game.start();
+
+        assertThat(game).hasFieldOrProperty("startTime");
+        assertThat(game.getStartTime()).isNull();
+
+    }
+
+    private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
         Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
         return arrangeGameOfAdminAndTwoPlayers();
@@ -146,5 +164,10 @@ public class GameTest {
         game.addPlayer(player1);
         game.addPlayer(player2);
         return game;
+    }
+
+    private void arrangeListOf9Questions() {
+        Mockito.when(questions.size()).thenReturn(9);
+        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
     }
 }

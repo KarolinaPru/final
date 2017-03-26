@@ -27,6 +27,8 @@ public class GameImpl {
     private final QuestionService questionService;
     @Getter
     private LocalDateTime startTime;
+    @Getter
+    private UUID id;
 
 
     public GameImpl(Player gameAdmin, Category category, QuestionService questionService) {
@@ -37,6 +39,7 @@ public class GameImpl {
         this.category = category;
         this.questionService = questionService;
 
+        id = UUID.randomUUID();
         players.add(gameAdmin);
 
     }
