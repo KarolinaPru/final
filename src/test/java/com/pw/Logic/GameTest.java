@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -17,26 +16,22 @@ import java.util.ArrayList;
 public class GameTest {
 
     @Mock
-    private PlayerInterface fakeGameAdmin;
+    private Player fakeGameAdmin;
     @Mock
-    private PlayerInterface fakePlayer1;
+    private Player fakePlayer1;
     @Mock
-    private PlayerInterface fakePlayer2;
+    private Player fakePlayer2;
     @Mock
-    private PlayerInterface fakePlayer3;
-    @Mock
-    private Category fakeCategory;
+    private Player fakePlayer3;
+
     @Mock
     private ArrayList<QuestionInterface> fakeQuestions;
-
-    @InjectMocks
-    private Game game;
 
 
     @Test
     public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new Game(null, fakeCategory))
+        assertThatThrownBy(() -> new GameImpl(null, Category.MISCELLANEOUS))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -44,7 +39,7 @@ public class GameTest {
     @Test
     public void GivenNoCategory_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new Game(fakeGameAdmin, null))
+        assertThatThrownBy(() -> new GameImpl(fakeGameAdmin, null))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -52,7 +47,7 @@ public class GameTest {
     @Test
     public void GivenPlayerAndCategory_WhenInstatiatingGame_ThenItShouldNotBeNull() {
 
-        Game gameOne = new Game(fakeGameAdmin, fakeCategory);
+        GameImpl gameOne = new GameImpl(fakeGameAdmin, Category.ARTS);
         assertThat(gameOne).isNotNull();
 
     }
@@ -60,7 +55,7 @@ public class GameTest {
     @Test
     public void GivenCreatedGameWithGameAdmin_WhenNewPlayersAreJoining_ThenTheyShouldBeAddedToListOfGamePlayers() {
 
-        Game game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
         assertThat(game.getPlayers().get(0).equals(fakeGameAdmin));
         assertThat(game.getPlayers().get(1).equals(fakePlayer1));
@@ -71,7 +66,7 @@ public class GameTest {
     @Test
     public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
 
-        Game game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
         game.addPlayer(fakePlayer3);
 
         int playersBeforeRemoval = game.getPlayers().size();
@@ -87,7 +82,7 @@ public class GameTest {
 
     @Test
     public void GivenGameWithoutAdmin_WhenStarting_ThenGameShouldNotStart() {
-        Game game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
         game.removePlayer(fakeGameAdmin);
         game.start();
@@ -97,7 +92,7 @@ public class GameTest {
 
     @Test
     public void GivenCategoryWithNoQuestions_WhenStarting_ThenIllegalArgumentExceptionShouldBeThrown() {
-        Game game = arrangeGameOfAdminAndTwoPlayers();
+        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
 
         assertThatThrownBy(() -> game.start())
                 .isInstanceOf(IllegalArgumentException.class);
@@ -105,21 +100,21 @@ public class GameTest {
 
     }
 
-//    @Test
-//    public void GivenGameAdminAndQuestionsInCategory_WhenStartingGame_ThenItShouldBeStarted(){
-//
-//        Game game = new Game(fakeGameAdmin, fakeCategory);
-//        game.setQuestions(fakeQuestions);
-//        game.start();
-//
-//        assertThat(game.getQuestions()).isNotEmpty();
-//        assertThat(game.isStarted()).isTrue();
-//
-//    }
+    @Test
+    public void GivenGameAdminAndQuestionsInCategory_WhenStartingGame_ThenItShouldBeStarted(){
 
 
-    private Game arrangeGameOfAdminAndTwoPlayers() {
-        Game game = new Game(fakeGameAdmin, fakeCategory);
+        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS);
+        game.start();
+
+        assertThat(game.getQuestions()).isNotEmpty();
+        assertThat(game.isStarted()).isTrue();
+
+    }
+
+
+    private GameImpl arrangeGameOfAdminAndTwoPlayers() {
+        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS);
 
         game.addPlayer(fakePlayer1);
         game.addPlayer(fakePlayer2);

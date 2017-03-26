@@ -10,35 +10,36 @@ import java.util.*;
  */
 
 @Data
-public class Game {
+public class GameImpl {
 
     @NonNull
-    private PlayerInterface gameAdmin;
+    private Player gameAdmin;
     @NonNull
     Category category;
-    private ArrayList<PlayerInterface> players = new ArrayList<>();
-    private ArrayList<QuestionInterface> questions;
+    private ArrayList<Player> players = new ArrayList<>();
+    private Map<Integer, QuestionInterface> questions;
     private boolean isStarted;
 
 
-    public Game (PlayerInterface gameAdmin, Category category) {
+    public GameImpl(Player gameAdmin, Category category) {
         if(gameAdmin == null || category == null) {
             throw new IllegalArgumentException("The game cannot be initiated without the game admin and a category.");
         }
         this.gameAdmin = gameAdmin;
         this.category = category;
+
         players.add(gameAdmin);
 
     }
 
-    public ArrayList<PlayerInterface> addPlayer(PlayerInterface player) {
+    public ArrayList<Player> addPlayer(Player player) {
         players.add(player);
 
         return players;
     }
 
-    public ArrayList<PlayerInterface> removePlayer(PlayerInterface fakePlayer2) {
-        players.remove(fakePlayer2);
+    public ArrayList<Player> removePlayer(Player player) {
+        players.remove(player);
 
         return players;
     }
@@ -48,13 +49,11 @@ public class Game {
 
         if(players.contains(gameAdmin)) {
 
-        questions = category.getAllQuestionsFromCategory();
-
-            if(!questions.isEmpty()) {
-                isStarted = true;
-            } else {
-                throw new IllegalArgumentException("There are not enough questions in this category.  Please choose another one or add them.");
-            }
+//            if(!questions.isEmpty()) {
+//                isStarted = true;
+//            } else {
+//                throw new IllegalArgumentException("There are not enough questions in this category.  Please choose another one or add them.");
+//            }
         }
 
         isStarted = false;
