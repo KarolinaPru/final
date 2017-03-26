@@ -41,7 +41,6 @@ public class GameImpl {
 
         id = UUID.randomUUID();
         players.add(gameAdmin);
-
     }
 
     public List<Player> addPlayer(Player player) {

@@ -33,7 +33,6 @@ public class GameTest {
 
         assertThatThrownBy(() -> new GameImpl(null, Category.MISCELLANEOUS, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
-
     }
 
     @Test
@@ -41,7 +40,6 @@ public class GameTest {
 
         assertThatThrownBy(() -> new GameImpl(gameAdmin, null, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
-
     }
 
     @Test
@@ -49,7 +47,6 @@ public class GameTest {
 
         GameImpl gameOne = new GameImpl(gameAdmin, Category.ARTS, questionService);
         assertThat(gameOne).isNotNull();
-
     }
 
     @Test
@@ -60,7 +57,6 @@ public class GameTest {
         assertThat(game.getPlayers().get(0).equals(gameAdmin));
         assertThat(game.getPlayers().get(1).equals(player1));
         assertThat(game.getPlayers().get(2).equals(player2));
-
     }
 
     @Test
@@ -84,7 +80,6 @@ public class GameTest {
         assertThat(playersBeforeRemoval).isEqualTo(4);
         assertThat(playersAfterRemoval).isEqualTo(3);
         assertThat(game.getPlayers()).doesNotContain(player2);
-
     }
 
     @Test
@@ -137,7 +132,6 @@ public class GameTest {
 
         assertThat(game).hasFieldOrProperty("startTime");
         assertThat(game.getStartTime()).isNotNull();
-
     }
 
     @Test
@@ -149,8 +143,8 @@ public class GameTest {
 
         assertThat(game).hasFieldOrProperty("startTime");
         assertThat(game.getStartTime()).isNull();
-
     }
+
 
     private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);

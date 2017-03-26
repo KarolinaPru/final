@@ -38,113 +38,88 @@ public class QuestionServiceHardcoded implements QuestionService {
 
     private List<Question> createQuestions(Category category) {
         List<Question> allQuestions = new ArrayList<>();
+        List<Answer> answers = new ArrayList<>();
+        Answer answer1 = new AnswerImpl("1", false);
+        Answer answer2 = new AnswerImpl("2", true);
+        Answer answer3 = new AnswerImpl("3", false);
+        Answer answer4 = new AnswerImpl("4", false);
+
+        answers.add(answer1);
+        answers.add(answer2);
+        answers.add(answer3);
+        answers.add(answer4);
+
 
         Question question1 = QuestionImpl.builder()
                 .question("Question 1")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", true))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question2 = QuestionImpl.builder()
                 .question("Question 2")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", true))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question3 = QuestionImpl.builder()
                 .question("Question 3")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", true))
+                .answers(answers)
                 .build();
 
         Question question4 = QuestionImpl.builder()
                 .question("Question 4")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", true))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question5 = QuestionImpl.builder()
                 .question("Question 5")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", true))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question6 = QuestionImpl.builder()
                 .question("Question 6")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", true))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question7 = QuestionImpl.builder()
                 .question("Question 7")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", true))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question8 = QuestionImpl.builder()
                 .question("Question 8")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", true))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question9 = QuestionImpl.builder()
                 .question("Question 9")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", true))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", false))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question10 = QuestionImpl.builder()
                 .question("Question 10")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("1", false))
-                .answer2(new Pair<>("2", false))
-                .answer3(new Pair<>("3", true))
-                .answer4(new Pair<>("4", false))
+                .answers(answers)
                 .build();
 
         Question question11 = QuestionImpl.builder()
                 .question("Question 11")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("a", false))
-                .answer2(new Pair<>("b", true))
-                .answer3(new Pair<>("c", false))
-                .answer4(new Pair<>("d", false))
+                .answers(answers)
                 .build();
 
         Question question12 = QuestionImpl.builder()
                 .question("Question 12")
                 .category(Category.MISCELLANEOUS)
-                .answer1(new Pair<>("a", true))
-                .answer2(new Pair<>("b", false))
-                .answer3(new Pair<>("c", false))
-                .answer4(new Pair<>("d", false))
+                .answers(answers)
                 .build();
 
         allQuestions.add(question1);
