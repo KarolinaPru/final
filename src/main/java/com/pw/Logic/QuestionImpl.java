@@ -4,13 +4,12 @@ import javafx.util.Pair;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
-
 /**
  * Created by Karolina on 24.03.2017.
  */
 @Data
-public class QuestionImpl implements QuestionInterface {
+@Builder
+public class QuestionImpl implements Question {
     private Category category;
     private String question;
     private Pair<String, Boolean> answer1;

@@ -5,9 +5,13 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.testng.annotations.BeforeTest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Karolina on 25.03.2017.
@@ -25,13 +29,14 @@ public class GameTest {
     private Player fakePlayer3;
 
     @Mock
-    private ArrayList<QuestionInterface> fakeQuestions;
-
+    private List<Question> questions;
+    @Mock
+    private QuestionService questionService;
 
     @Test
     public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new GameImpl(null, Category.MISCELLANEOUS))
+        assertThatThrownBy(() -> new GameImpl(null, Category.MISCELLANEOUS, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -39,15 +44,15 @@ public class GameTest {
     @Test
     public void GivenNoCategory_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new GameImpl(fakeGameAdmin, null))
+        assertThatThrownBy(() -> new GameImpl(fakeGameAdmin, null, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
 
     @Test
-    public void GivenPlayerAndCategory_WhenInstatiatingGame_ThenItShouldNotBeNull() {
+    public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
-        GameImpl gameOne = new GameImpl(fakeGameAdmin, Category.ARTS);
+        GameImpl gameOne = new GameImpl(fakeGameAdmin, Category.ARTS, questionService);
         assertThat(gameOne).isNotNull();
 
     }
@@ -91,30 +96,19 @@ public class GameTest {
     }
 
     @Test
-    public void GivenCategoryWithNoQuestions_WhenStarting_ThenIllegalArgumentExceptionShouldBeThrown() {
-        GameImpl game = arrangeGameOfAdminAndTwoPlayers();
-
-        assertThatThrownBy(() -> game.start())
-                .isInstanceOf(IllegalArgumentException.class);
-
-
-    }
-
-    @Test
     public void GivenGameAdminAndQuestionsInCategory_WhenStartingGame_ThenItShouldBeStarted(){
 
+        Mockito.when(questionService.getQuestions(Mockito.any())).thenReturn(questions);
+        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS, questionService);
 
-        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS);
         game.start();
 
-        assertThat(game.getQuestions()).isNotEmpty();
         assertThat(game.isStarted()).isTrue();
-
     }
 
 
     private GameImpl arrangeGameOfAdminAndTwoPlayers() {
-        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS);
+        GameImpl game = new GameImpl(fakeGameAdmin, Category.MISCELLANEOUS, questionService);
 
         game.addPlayer(fakePlayer1);
         game.addPlayer(fakePlayer2);

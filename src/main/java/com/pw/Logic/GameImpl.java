@@ -15,18 +15,21 @@ public class GameImpl {
     @NonNull
     private Player gameAdmin;
     @NonNull
-    Category category;
+    private Category category;
     private ArrayList<Player> players = new ArrayList<>();
-    private Map<Integer, QuestionInterface> questions;
+    private List<Question> questions;
     private boolean isStarted;
+    @NonNull
+    private final QuestionService questionService;
 
 
-    public GameImpl(Player gameAdmin, Category category) {
+    public GameImpl(Player gameAdmin, Category category, QuestionService questionService) {
         if(gameAdmin == null || category == null) {
             throw new IllegalArgumentException("The game cannot be initiated without the game admin and a category.");
         }
         this.gameAdmin = gameAdmin;
         this.category = category;
+        this.questionService = questionService;
 
         players.add(gameAdmin);
 
@@ -44,38 +47,20 @@ public class GameImpl {
         return players;
     }
 
-
     public void start() {
 
-        if(players.contains(gameAdmin)) {
+        questions = questionService.getQuestions(category);
 
-//            if(!questions.isEmpty()) {
-//                isStarted = true;
-//            } else {
-//                throw new IllegalArgumentException("There are not enough questions in this category.  Please choose another one or add them.");
-//            }
+        if (questions == null) {
+            isStarted = false;
+            return;
         }
 
-        isStarted = false;
+        if(!players.contains(gameAdmin)) {
+            isStarted = false;
+            return;
+        }
+
+        isStarted = true;
     }
-
-//    public ArrayList<QuestionInterface> getRandomQuestions() {
-//        ArrayList<QuestionInterface> allQuestionsFromCategory = category.getAllQuestionsFromCategory();
-//
-//        Random random = new Random();
-//        QuestionInterface question;
-//
-//        if (allQuestionsFromCategory.size() >= 10) {
-//
-//            for (int i = 0; i < 10; i++) {
-//
-//                question = allQuestionsFromCategory.get(random.nextInt(allQuestionsFromCategory.size()));
-//                questions.add(question);
-//
-//                }
-//            }
-//
-//            return questions;
-//    }
-
 }
