@@ -1,12 +1,9 @@
 package com.pw.Logic;
 
 import groovy.transform.EqualsAndHashCode;
-import javafx.util.Pair;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

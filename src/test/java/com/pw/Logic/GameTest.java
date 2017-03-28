@@ -27,11 +27,13 @@ public class GameTest {
     private List<Question> questions;
     @Mock
     private QuestionService questionService;
+    @Mock
+    private Category category;
 
     @Test
     public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
 
-        assertThatThrownBy(() -> new GameImpl(null, Category.MISCELLANEOUS, questionService))
+        assertThatThrownBy(() -> new GameImpl(null, category, questionService))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -45,7 +47,7 @@ public class GameTest {
     @Test
     public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
-        GameImpl gameOne = new GameImpl(gameOwner, Category.ARTS, questionService);
+        GameImpl gameOne = new GameImpl(gameOwner, category, questionService);
         assertThat(gameOne).isNotNull();
     }
 
@@ -194,7 +196,7 @@ public class GameTest {
     }
 
     private GameImpl arrangeGameOfOwnerAndTwoPlayers() {
-        GameImpl game = new GameImpl(gameOwner, Category.MISCELLANEOUS, questionService);
+        GameImpl game = new GameImpl(gameOwner, category, questionService);
 
         game.addPlayer(player1);
         game.addPlayer(player2);

@@ -10,21 +10,22 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class QuestionServiceHardcodedTest {
     private QuestionServiceHardcoded questionService = new QuestionServiceHardcoded();
+    private Category category = new CategoryImpl("Category 1", "Some category");
 
     @Test
     public void Given2ListsOfQuestions_WhenCheckedForEquality_ThenFalseShouldBeReturned() {
 
-        List<Question> q1 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
-        List<Question> q2 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
+        List<Question> q1 = questionService.get10RandomQuestions(category);
+        List<Question> q2 = questionService.get10RandomQuestions(category);
 
         assertThat(q1).isNotEqualTo(q2);
     }
 
     @Test
     public void Given3ListOfQuestions_WhenCheckedForSize_ThenAllShouldContain10Questions() {
-        List<Question> q1 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
-        List<Question> q2 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
-        List<Question> q3 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
+        List<Question> q1 = questionService.get10RandomQuestions(category);
+        List<Question> q2 = questionService.get10RandomQuestions(category);
+        List<Question> q3 = questionService.get10RandomQuestions(category);
 
         int size1 = q1.size();
         int size2 = q2.size();
@@ -35,7 +36,7 @@ public class QuestionServiceHardcodedTest {
 
     @Test
     public void GivenList_WhenCheckedForUniquenessOfQuestions_ThenTrueShouldBeReturned() {
-        List<Question> q1 = questionService.get10RandomQuestions(Category.MISCELLANEOUS);
+        List<Question> q1 = questionService.get10RandomQuestions(category);
 
         assertThat(q1).doesNotHaveDuplicates();
 

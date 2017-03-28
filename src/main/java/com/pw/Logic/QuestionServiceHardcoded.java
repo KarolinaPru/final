@@ -1,8 +1,5 @@
 package com.pw.Logic;
 
-import javafx.util.Pair;
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,13 +10,13 @@ import java.util.Random;
 public class QuestionServiceHardcoded implements QuestionService {
 
     private Random random = new Random();
+    private Category category = new CategoryImpl("Category1", "some category");
 
     @Override
     public List<Question> get10RandomQuestions(Category category) {
         List<Question> questions = new ArrayList<>();
 
-
-        List<Question> allQuestions = createQuestions(Category.MISCELLANEOUS);
+        List<Question> allQuestions = createQuestions(category);
         int size = allQuestions.size();
 
         Question q;
@@ -52,73 +49,73 @@ public class QuestionServiceHardcoded implements QuestionService {
 
         Question question1 = QuestionImpl.builder()
                 .question("Question 1")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question2 = QuestionImpl.builder()
                 .question("Question 2")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question3 = QuestionImpl.builder()
                 .question("Question 3")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question4 = QuestionImpl.builder()
                 .question("Question 4")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question5 = QuestionImpl.builder()
                 .question("Question 5")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question6 = QuestionImpl.builder()
                 .question("Question 6")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question7 = QuestionImpl.builder()
                 .question("Question 7")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question8 = QuestionImpl.builder()
                 .question("Question 8")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question9 = QuestionImpl.builder()
                 .question("Question 9")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question10 = QuestionImpl.builder()
                 .question("Question 10")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question11 = QuestionImpl.builder()
                 .question("Question 11")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
         Question question12 = QuestionImpl.builder()
                 .question("Question 12")
-                .category(Category.MISCELLANEOUS)
+                .category(category)
                 .answers(answers)
                 .build();
 
