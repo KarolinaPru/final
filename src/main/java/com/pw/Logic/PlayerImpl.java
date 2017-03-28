@@ -2,6 +2,8 @@ package com.pw.Logic;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 /**
  * Created by Karolina on 20.03.2017.
  */
@@ -10,21 +12,14 @@ import lombok.Data;
 public class PlayerImpl implements Player {
 
     private String name;
-    private static int id;
+    private UUID id;
     private int xp = 0;
     private int gamesPlayed;
 
     public PlayerImpl(String name) {
         this.name = name;
-        this.xp = xp;
-        this.gamesPlayed = gamesPlayed;
-        id++;
+        id = UUID.randomUUID();
 
     }
-
-    public static int getId() {
-        return id;
-    }
-
 
 }

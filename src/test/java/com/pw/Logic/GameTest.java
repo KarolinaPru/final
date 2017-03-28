@@ -128,6 +128,7 @@ public class GameTest {
 
         GameImpl game = arrangePositiveGameConditions();
 
+        game.getQuestions();
         game.start();
 
         assertThat(game.isStarted()).isTrue();
@@ -137,6 +138,7 @@ public class GameTest {
     public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned() {
         GameImpl game = arrangePositiveGameConditions();
 
+        game.getQuestions();
         game.start();
 
         assertThat(game).hasFieldOrProperty("startTime");
@@ -188,6 +190,17 @@ public class GameTest {
         assertThat(game.isOpen()).isTrue();
         assertThat(game.isStarted()).isTrue();
     }
+
+    @Test
+    public void GivenGameIsStarted_WhenCollectingAnswers_ThenListOfThemShouldBeReturned() {
+        GameImpl game = arrangePositiveGameConditions();
+        game.start();
+
+//        assertThat(game.getCollectedAnswers()).isNotNull();
+
+    }
+
+
 
     private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
