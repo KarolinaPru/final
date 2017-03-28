@@ -194,6 +194,7 @@ public class GameTest {
     @Test
     public void GivenGameIsStarted_WhenCollectingAnswers_ThenListOfThemShouldBeReturned() {
         GameImpl game = arrangePositiveGameConditions();
+        game.getQuestions();
         game.start();
 
 //        assertThat(game.getCollectedAnswers()).isNotNull();

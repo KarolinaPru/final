@@ -94,20 +94,25 @@ public class GameImpl {
         }
     }
 
-    private int[] collectAnswers(List<Answer> answers) {
-        Answer answer;
-        int[] submittedAnswersXp = new int[10];
 
-        for (int i = 0; i < answers.size(); i++) {
-            answer = answers.get(i);
+    private int evaluateAnswers(List<UUID> submittedAnswers) {
+        List<UUID> uuidsOfCorrectedAnswers = new ArrayList<>();
 
-            if (answer.isCorrect()) {
+        List<Answer> allAnswers = new ArrayList<>();
+        List<Answer> tempAnswers = new ArrayList<>();
 
+        for (Question question : questions) {
+            tempAnswers = (question.getAnswers());
 
-            }
-
+            allAnswers.addAll(tempAnswers);
         }
 
-        return submittedAnswersXp;
+    //TODO: test!!!
+    // Get a list of all answers, isolate the correct ones and get their ids
+    // compare the list of uuids with the list of uuids received as input
+
+        int xp = 0;
+        return xp;
     }
+
 }
