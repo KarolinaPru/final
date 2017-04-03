@@ -1,7 +1,7 @@
 package com.pw.Logic;
 
 import org.junit.Test;
-import org.mockito.Mock;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,11 +25,11 @@ public class QuestionImplTest {
         Answer answer4 = new AnswerImpl("4", false);
         Answer answer5 = new AnswerImpl("5", true);
 
-        UUID id1 = answer1.getId();
-        UUID id2 = answer2.getId();
-        UUID id3 = answer3.getId();
-        UUID id4 = answer4.getId();
-        UUID id5 = answer5.getId();
+        long id1 = answer1.getId();
+        long id2 = answer2.getId();
+        long id3 = answer3.getId();
+        long id4 = answer4.getId();
+        long id5 = answer5.getId();
 
         answers.add(answer1);
         answers.add(answer2);
@@ -37,13 +37,13 @@ public class QuestionImplTest {
         answers.add(answer4);
         answers.add(answer5);
 
-        List<UUID> uuids = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
 
         QuestionImpl qi = new QuestionImpl("Question1", category, answers);
 
-        uuids = qi.getUuidOfCorrectAnswers(answers);
+        ids = qi.getIdOfCorrectAnswers(answers);
 
-        assertThat(uuids).contains(id1, id3, id5);
-        assertThat(uuids).doesNotContain(id2, id4);
+        assertThat(ids).contains(id1, id3, id5);
+        assertThat(ids).doesNotContain(id2, id4);
     }
 }

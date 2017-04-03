@@ -14,8 +14,9 @@ import java.util.*;
 
 public class GameImpl {
 
+    private static long nextAvailableId;
     @Getter
-    private UUID id;
+    private long id = 1;
     @NonNull
     private Category category;
     @NonNull
@@ -43,7 +44,8 @@ public class GameImpl {
         this.category = category;
         this.questionService = questionService;
 
-        id = UUID.randomUUID();
+        id = nextAvailableId;
+        nextAvailableId++;
         isOpen = true;
         players.add(gameOwner);
     }

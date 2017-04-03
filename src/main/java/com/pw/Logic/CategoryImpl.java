@@ -1,5 +1,7 @@
 package com.pw.Logic;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
 /**
@@ -8,12 +10,15 @@ import java.util.UUID;
 public class CategoryImpl implements Category {
     private String name;
     private String description;
-    private UUID id;
+    private static long nextAvailableId;
+    @Getter
+    private long id = 1;
 
     CategoryImpl(String name, String description) {
         this.name = name;
         this.description = description;
-        id = UUID.randomUUID();
+        id = nextAvailableId;
+        nextAvailableId++;
     }
 
 }

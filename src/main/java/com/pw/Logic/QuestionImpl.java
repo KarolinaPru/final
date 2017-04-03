@@ -19,14 +19,16 @@ public class QuestionImpl implements Question {
     private Category category;
     private String question;
     private List<Answer> answers;
-    private UUID id = UUID.randomUUID();
+    private static long nextAvailableId;
+    @Getter
+    private long id = 1;
 
 
     public QuestionImpl(String question, Category category, List<Answer> answers) {
         this.category = category;
         this.question = question;
         this.answers = answers;
-        id = UUID.randomUUID();
+        id = nextAvailableId;
     }
 
     @Override
@@ -35,19 +37,19 @@ public class QuestionImpl implements Question {
     }
 
     @Override
-    public List<UUID> getUuidOfCorrectAnswers(List<Answer> answers) {
+    public List<Long> getIdOfCorrectAnswers(List<Answer> answers) {
         this.answers = answers;
 
-        List<UUID> correctAnswersUuids = new ArrayList<>();
+        List<Long> correctAnswersIds = new ArrayList<>();
 
         for (Answer answer : answers) {
 
             if(answer.isCorrect()) {
-                correctAnswersUuids.add(answer.getId());
+                correctAnswersIds.add(answer.getId());
             }
         }
 
-        return correctAnswersUuids;
+        return correctAnswersIds;
     }
 }
 

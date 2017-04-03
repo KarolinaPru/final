@@ -9,5 +9,5 @@ public interface Answer {
 
     public boolean isCorrect();
 
-    public UUID getId();
+    public long getId();
 }

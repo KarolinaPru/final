@@ -14,12 +14,15 @@ import java.util.UUID;
 public class AnswerImpl implements Answer {
     private String answer;
     private boolean isCorrect;
-    private UUID id;
+    private static long nextAvailableId;
+    @Getter
+    private long id = 1;
 
     public AnswerImpl(String answer, boolean isCorrect) {
         this.answer = answer;
         this.isCorrect = isCorrect;
-        id = UUID.randomUUID();
+        id = nextAvailableId;
+        nextAvailableId++;
     }
 
 }

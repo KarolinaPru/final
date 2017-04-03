@@ -1,6 +1,7 @@
 package com.pw.Logic;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.UUID;
 
@@ -12,13 +13,16 @@ import java.util.UUID;
 public class PlayerImpl implements Player {
 
     private String name;
-    private UUID id;
+    private static long nextAvailableId;
+    @Getter
+    private long id = 1;
     private int xp = 0;
     private int gamesPlayed;
 
     public PlayerImpl(String name) {
         this.name = name;
-        id = UUID.randomUUID();
+        id = nextAvailableId;
+        nextAvailableId++;
 
     }
 
