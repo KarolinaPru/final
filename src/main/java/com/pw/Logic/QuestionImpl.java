@@ -37,7 +37,7 @@ public class QuestionImpl implements Question {
     }
 
     @Override
-    public List<Long> getIdOfCorrectAnswers(List<Answer> answers) {
+    public List<Long> getIdsOfCorrectAnswers(List<Answer> answers) {
         this.answers = answers;
 
         List<Long> correctAnswersIds = new ArrayList<>();

@@ -1,12 +1,15 @@
 package com.pw.Logic;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Matchers.any;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -115,7 +118,7 @@ public class GameTest {
     @Test
     public void GivenNullListOfQuestions_WhenStartingGame_ThenItShouldNotStart(){
 
-        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(null);
+        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(null);
         GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
         game.start();
@@ -192,20 +195,35 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameIsStarted_WhenCollectingAnswers_ThenListOfThemShouldBeReturned() {
+    public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() {
         GameImpl game = arrangePositiveGameConditions();
         game.getQuestions();
         game.start();
 
-//        assertThat(game.getCollectedAnswers()).isNotNull();
+        ArrayList<Answer> submittedAnswers = new ArrayList<>();
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
 
+
+        int expectedScore = 60;
+        int actualScore = game.evaluateAnswers(player1, submittedAnswers);
+
+        assertThat(actualScore).isEqualTo(expectedScore);
     }
 
 
 
     private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
-        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
+        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(questions);
         return arrangeGameOfOwnerAndTwoPlayers();
     }
 
@@ -219,6 +237,6 @@ public class GameTest {
 
     private void arrangeListOf9Questions() {
         Mockito.when(questions.size()).thenReturn(9);
-        Mockito.when(questionService.get10RandomQuestions(Mockito.any())).thenReturn(questions);
+        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(questions);
     }
 }

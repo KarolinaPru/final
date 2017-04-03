@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -41,7 +41,7 @@ public class QuestionImplTest {
 
         QuestionImpl qi = new QuestionImpl("Question1", category, answers);
 
-        ids = qi.getIdOfCorrectAnswers(answers);
+        ids = qi.getIdsOfCorrectAnswers(answers);
 
         assertThat(ids).contains(id1, id3, id5);
         assertThat(ids).doesNotContain(id2, id4);
