@@ -10,7 +10,9 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Karolina on 25.03.2017.
@@ -32,6 +34,7 @@ public class GameTest {
     @Mock
     private Category category;
     private ArrayList<Answer> submittedAnswers;
+    private Map<Player, Integer> scores;
 
     @Test
     public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
@@ -236,6 +239,22 @@ public class GameTest {
 
         assertThat(player1.getGamesPlayed()).isEqualTo(expectedGamesPlayed);
 
+    }
+
+    @Test
+    public void GivenAtLeast2Players_WhenGettingWinner_ThenOneWithHigherScoreShouldBeReturned() {
+        GameImpl game = arrangePositiveGameConditions();
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
+        int scorePlayer1 = game.evaluateAnswers(player1, submittedAnswers);
+        scores = new HashMap<>();
+        scores.put(player2, 0);
+        scores.put(player3, 20);
+        scores.put(player1, scorePlayer1);
+        scores.put(gameOwner, 40);
+
+        Player actualWinner = game.getWinner(scores);
+
+        assertThat(actualWinner).isEqualTo(player1);
     }
 
     private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) {

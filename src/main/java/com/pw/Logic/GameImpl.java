@@ -27,13 +27,15 @@ public class GameImpl {
     private final QuestionService questionService;
     private List<Question> questions;
     @Getter
-    private List<Answer> answers;
+    private Map<Player, Integer> scores = new HashMap<>();
     @Getter
     private boolean isStarted;
     @Getter
     private boolean isOpen;
     @Getter
     private LocalDateTime startTime;
+    @Getter
+    private Player winner;
 
 
     public GameImpl(Player gameOwner, Category category, QuestionService questionService) {
@@ -83,20 +85,6 @@ public class GameImpl {
         startTime = LocalDateTime.now();
     }
 
-    public void end(Player player) {
-
-        players = removePlayer(player);
-
-        if (players.size() == 0) {
-            isOpen = false;
-            isStarted = false;
-        } else {
-            isOpen = true;
-            isStarted = true;
-        }
-    }
-
-
     public int evaluateAnswers(Player player, List<Answer> submittedAnswers) {
 
         int score = 0;
@@ -118,5 +106,27 @@ public class GameImpl {
         return score;
     }
 
+    public void end(Player player) {
 
+        players = removePlayer(player);
+
+        if (players.size() == 0) {
+            isOpen = false;
+            isStarted = false;
+        } else {
+            isOpen = true;
+            isStarted = true;
+        }
+    }
+
+    public Player getWinner(Map<Player, Integer> scores) {
+
+        //TODO:
+        // Make sure all the players have submitted their answers to determine the actual winner
+        // Give a bonus to the winner
+
+        winner = Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
+
+        return winner;
+    }
 }

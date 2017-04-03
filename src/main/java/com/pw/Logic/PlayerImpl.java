@@ -22,7 +22,6 @@ public class PlayerImpl implements Player {
         this.name = name;
         id = nextAvailableId;
         nextAvailableId++;
-
     }
 
     @Override
