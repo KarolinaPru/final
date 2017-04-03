@@ -13,10 +13,9 @@ import java.util.UUID;
 public class PlayerImpl implements Player {
 
     private String name;
-    private static long nextAvailableId;
-    @Getter
-    private long id = 1;
-    private int xp = 0;
+    private static long nextAvailableId = 1;
+    private long id;
+    private int xp;
     private int gamesPlayed;
 
     public PlayerImpl(String name) {
@@ -26,4 +25,13 @@ public class PlayerImpl implements Player {
 
     }
 
+    @Override
+    public int getXp() {
+        return xp;
+    }
+
+    @Override
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
 }

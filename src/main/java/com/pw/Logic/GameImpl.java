@@ -108,7 +108,11 @@ public class GameImpl {
                 score += 10;
             }
         }
-        
+
+        int xp = player.getXp();
+        int gainedXp = xp += score;
+        player.setXp(gainedXp);
+
         return score;
     }
 

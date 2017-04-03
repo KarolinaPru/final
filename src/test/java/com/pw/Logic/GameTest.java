@@ -20,8 +20,7 @@ public class GameTest {
 
     @Mock
     private Player gameOwner;
-    @Mock
-    private Player player1;
+    private Player player1 = new PlayerImpl("Janek");
     @Mock
     private Player player2;
     @Mock
@@ -32,6 +31,7 @@ public class GameTest {
     private QuestionService questionService;
     @Mock
     private Category category;
+    private ArrayList<Answer> submittedAnswers;
 
     @Test
     public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
@@ -200,6 +200,33 @@ public class GameTest {
         game.getQuestions();
         game.start();
 
+        submittedAnswers = getSubmittedAnswers();
+
+        int expectedScore = 60;
+        int actualScore = game.evaluateAnswers(player1, submittedAnswers);
+
+        assertThat(actualScore).isEqualTo(expectedScore);
+    }
+
+    @Test
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReveiveXP(){
+        GameImpl game = arrangePositiveGameConditions();
+        game.getQuestions();
+        game.start();
+        submittedAnswers = getSubmittedAnswers();
+
+        int xp = player1.getXp();
+        int score = game.evaluateAnswers(player1, submittedAnswers);
+        int expectedXp = xp + score;
+
+        assertThat(player1.getXp()).isEqualTo(expectedXp);
+
+
+    }
+
+
+
+    private ArrayList<Answer> getSubmittedAnswers() {
         ArrayList<Answer> submittedAnswers = new ArrayList<>();
         submittedAnswers.add(new AnswerImpl("", true));
         submittedAnswers.add(new AnswerImpl("", true));
@@ -211,15 +238,8 @@ public class GameTest {
         submittedAnswers.add(new AnswerImpl("", false));
         submittedAnswers.add(new AnswerImpl("", false));
         submittedAnswers.add(new AnswerImpl("", false));
-
-
-        int expectedScore = 60;
-        int actualScore = game.evaluateAnswers(player1, submittedAnswers);
-
-        assertThat(actualScore).isEqualTo(expectedScore);
+        return submittedAnswers;
     }
-
-
 
     private GameImpl arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
