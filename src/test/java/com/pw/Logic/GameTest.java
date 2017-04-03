@@ -197,10 +197,7 @@ public class GameTest {
     @Test
     public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() {
         GameImpl game = arrangePositiveGameConditions();
-        game.getQuestions();
-        game.start();
-
-        submittedAnswers = getSubmittedAnswers();
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
 
         int expectedScore = 60;
         int actualScore = game.evaluateAnswers(player1, submittedAnswers);
@@ -209,21 +206,43 @@ public class GameTest {
     }
 
     @Test
-    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReveiveXP(){
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReceiveXP(){
         GameImpl game = arrangePositiveGameConditions();
-        game.getQuestions();
-        game.start();
-        submittedAnswers = getSubmittedAnswers();
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
 
-        int xp = player1.getXp();
+        int initialXp = player1.getXp();
         int score = game.evaluateAnswers(player1, submittedAnswers);
-        int expectedXp = xp + score;
+
+        int expectedXp = initialXp + score;
 
         assertThat(player1.getXp()).isEqualTo(expectedXp);
+    }
 
+    @Test
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayersGamePlayedShouldBeUpdated(){
+
+        int initialGamesPlayed = player1.getGamesPlayed();
+        GameImpl game = arrangePositiveGameConditions();
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
+
+        game.evaluateAnswers(player1, submittedAnswers);
+
+        GameImpl game2 = arrangePositiveGameConditions();
+        getQuestionsStartGameAndGetSubmittedAnswers(game2);
+
+        game2.evaluateAnswers(player1, submittedAnswers);
+
+        int expectedGamesPlayed = initialGamesPlayed + 2;
+
+        assertThat(player1.getGamesPlayed()).isEqualTo(expectedGamesPlayed);
 
     }
 
+    private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) {
+        game.getQuestions();
+        game.start();
+        submittedAnswers = getSubmittedAnswers();
+    }
 
 
     private ArrayList<Answer> getSubmittedAnswers() {

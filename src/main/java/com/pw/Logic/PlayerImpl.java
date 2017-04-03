@@ -34,4 +34,14 @@ public class PlayerImpl implements Player {
     public void setXp(int xp) {
         this.xp = xp;
     }
+
+    @Override
+    public int getGamesPlayed(){
+        return gamesPlayed;
+    }
+
+    @Override
+    public void incrementGamesPlayed() {
+        this.gamesPlayed += 1;
+    }
 }

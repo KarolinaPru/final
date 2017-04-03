@@ -113,6 +113,8 @@ public class GameImpl {
         int gainedXp = xp += score;
         player.setXp(gainedXp);
 
+        player.incrementGamesPlayed();
+
         return score;
     }
 
