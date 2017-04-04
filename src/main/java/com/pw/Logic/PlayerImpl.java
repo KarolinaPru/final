@@ -30,8 +30,8 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void setXp(int xp) {
-        this.xp = xp;
+    public void addXp(int xp) {
+        this.xp += xp;
     }
 
     @Override

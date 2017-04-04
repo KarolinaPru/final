@@ -5,7 +5,7 @@ package com.pw.Logic;
  */
 public interface Player {
     public int getXp();
-    public void setXp(int xp);
+    public void addXp(int xp);
     public int getGamesPlayed();
     public void incrementGamesPlayed();
 }

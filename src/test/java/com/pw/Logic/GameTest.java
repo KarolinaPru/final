@@ -20,8 +20,7 @@ import java.util.Map;
 @RunWith(MockitoJUnitRunner.class)
 public class GameTest {
 
-    @Mock
-    private Player gameOwner;
+    private Player gameOwner = new PlayerImpl("Zenek");
     private Player player1 = new PlayerImpl("Janek");
     @Mock
     private Player player2;
@@ -34,6 +33,7 @@ public class GameTest {
     @Mock
     private Category category;
     private ArrayList<Answer> submittedAnswers;
+    private ArrayList<Answer> submittedAnswers2;
     private Map<Player, Integer> scores;
 
     @Test
@@ -242,19 +242,50 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenGettingWinner_ThenOneWithHigherScoreShouldBeReturned() {
+    public void GivenAtLeast2Players_WhenGettingWinner_ThenOneWithTheHighestScoreShouldBeReturned() {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
-        int scorePlayer1 = game.evaluateAnswers(player1, submittedAnswers);
-        scores = new HashMap<>();
-        scores.put(player2, 0);
-        scores.put(player3, 20);
-        scores.put(player1, scorePlayer1);
-        scores.put(gameOwner, 40);
+        arrangeMapOfPlayersScores(game);
 
         Player actualWinner = game.getWinner(scores);
 
         assertThat(actualWinner).isEqualTo(player1);
+    }
+
+    @Test
+    public void GivenAtLeast2Players_WhenGettingWinner_ThenTheyReceiveBonusOf30Xp() {
+        GameImpl game = arrangePositiveGameConditions();
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
+        arrangeMapOfPlayersScores(game);
+
+        int winnersXpAfterEvaluation = player1.getXp();
+        game.getWinner(scores);
+
+        assertThat(player1.getXp()).isEqualTo(winnersXpAfterEvaluation + 30);
+    }
+
+    @Test
+    public void GivenSinglePlayer_WhenGettingWinner_ThenNoBonusIsGiven() {
+        GameImpl game = new GameImpl(gameOwner, category, questionService);
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
+
+        game.evaluateAnswers(gameOwner, submittedAnswers);
+
+        int xpAfterEvaluation = gameOwner.getXp();
+        game.getWinner(scores);
+
+        assertThat(gameOwner.getXp()).isEqualTo(xpAfterEvaluation);
+
+    }
+
+    private void arrangeMapOfPlayersScores(GameImpl game) {
+        int scorePlayer1 = game.evaluateAnswers(player1, submittedAnswers);
+        int scoreGameOwner = game.evaluateAnswers(gameOwner, getSubmittedAnswers2());
+
+        scores = new HashMap<>();
+        scores.put(player2, 0);
+        scores.put(player1, scorePlayer1);
+        scores.put(gameOwner, scoreGameOwner);
     }
 
     private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) {
@@ -272,6 +303,21 @@ public class GameTest {
         submittedAnswers.add(new AnswerImpl("", true));
         submittedAnswers.add(new AnswerImpl("", true));
         submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
+        submittedAnswers.add(new AnswerImpl("", false));
+        return submittedAnswers;
+    }
+
+    private ArrayList<Answer> getSubmittedAnswers2() {
+        ArrayList<Answer> submittedAnswers = new ArrayList<>();
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", true));
+        submittedAnswers.add(new AnswerImpl("", false));
         submittedAnswers.add(new AnswerImpl("", false));
         submittedAnswers.add(new AnswerImpl("", false));
         submittedAnswers.add(new AnswerImpl("", false));

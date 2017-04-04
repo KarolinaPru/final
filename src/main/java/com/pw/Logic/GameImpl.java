@@ -1,7 +1,6 @@
 package com.pw.Logic;
 
 import lombok.Getter;
-import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -11,31 +10,21 @@ import java.util.*;
  */
 
 // Odliczanie czasu oraz wyswietlanie kolejnych pytań  beda lezec po stronie przegladarki
-
+@Getter
 public class GameImpl {
 
     private static long nextAvailableId;
-    @Getter
     private long id = 1;
-    @NonNull
     private Category category;
-    @NonNull
     private Player gameOwner;
-    @Getter
+    private Player winner;
     private List<Player> players = new ArrayList<>();
-    @NonNull
     private final QuestionService questionService;
     private List<Question> questions;
-    @Getter
     private Map<Player, Integer> scores = new HashMap<>();
-    @Getter
     private boolean isStarted;
-    @Getter
     private boolean isOpen;
-    @Getter
     private LocalDateTime startTime;
-    @Getter
-    private Player winner;
 
 
     public GameImpl(Player gameOwner, Category category, QuestionService questionService) {
@@ -97,11 +86,9 @@ public class GameImpl {
             }
         }
 
-        int xp = player.getXp();
-        int gainedXp = xp += score;
-        player.setXp(gainedXp);
-
+        player.addXp(score);
         player.incrementGamesPlayed();
+        gatherScores(player, score);
 
         return score;
     }
@@ -123,10 +110,19 @@ public class GameImpl {
 
         //TODO:
         // Make sure all the players have submitted their answers to determine the actual winner
-        // Give a bonus to the winner
 
-        winner = Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
+        if (scores != null && scores.size() == players.size() && players.size() > 1) {
+            winner = Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        return winner;
+            winner.addXp(30);
+        }
+            return winner;
+
+    }
+
+    private Map<Player, Integer> gatherScores(Player player, int score) {
+        scores.put(player, score);
+
+        return scores;
     }
 }
