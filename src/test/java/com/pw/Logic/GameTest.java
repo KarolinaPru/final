@@ -242,37 +242,37 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenGettingWinner_ThenOneWithTheHighestScoreShouldBeReturned() {
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenOneWithTheHighestScoreShouldBeReturned() {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
 
-        Player actualWinner = game.getWinner(scores);
+        Player actualWinner = game.determineWinner(scores);
 
         assertThat(actualWinner).isEqualTo(player1);
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenGettingWinner_ThenTheyReceiveBonusOf30Xp() {
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenTheyReceiveBonusOf30Xp() {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
 
         int winnersXpAfterEvaluation = player1.getXp();
-        game.getWinner(scores);
+        game.determineWinner(scores);
 
         assertThat(player1.getXp()).isEqualTo(winnersXpAfterEvaluation + 30);
     }
 
     @Test
-    public void GivenSinglePlayer_WhenGettingWinner_ThenNoBonusIsGiven() {
+    public void GivenSinglePlayer_WhenDeterminingWinner_ThenNoBonusIsGiven() {
         GameImpl game = new GameImpl(gameOwner, category, questionService);
         getQuestionsStartGameAndGetSubmittedAnswers(game);
 
         game.evaluateAnswers(gameOwner, submittedAnswers);
 
         int xpAfterEvaluation = gameOwner.getXp();
-        game.getWinner(scores);
+        game.determineWinner(scores);
 
         assertThat(gameOwner.getXp()).isEqualTo(xpAfterEvaluation);
 

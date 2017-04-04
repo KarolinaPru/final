@@ -106,7 +106,7 @@ public class GameImpl {
         }
     }
 
-    public Player getWinner(Map<Player, Integer> scores) {
+    public Player determineWinner(Map<Player, Integer> scores) {
 
         //TODO:
         // Make sure all the players have submitted their answers to determine the actual winner
