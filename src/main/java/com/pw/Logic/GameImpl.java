@@ -116,7 +116,9 @@ public class GameImpl {
 
             winner.addXp(30);
         }
-            return winner;
+
+        //TODO: consider not returning the winner - maybe just a bonus will do?
+        return winner;
 
     }
 
