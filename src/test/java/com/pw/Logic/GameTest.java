@@ -272,10 +272,18 @@ public class GameTest {
         game.evaluateAnswers(gameOwner, submittedAnswers);
 
         int xpAfterEvaluation = gameOwner.getXp();
-        game.determineWinner(scores);
+        game.determineWinner(game.getScores());
 
         assertThat(gameOwner.getXp()).isEqualTo(xpAfterEvaluation);
+        assertThat(game.getWinner().equals(gameOwner));
+    }
 
+    @Test
+    public void GivenScoresAreNull_WhenDeterminingWinner_ThenExceptionIsThrown() {
+        GameImpl game = new GameImpl(gameOwner, category, questionService);
+        getQuestionsStartGameAndGetSubmittedAnswers(game);
+
+        assertThatThrownBy(() -> game.determineWinner(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private void arrangeMapOfPlayersScores(GameImpl game) {

@@ -21,7 +21,7 @@ public class GameImpl {
     private List<Player> players = new ArrayList<>();
     private final QuestionService questionService;
     private List<Question> questions;
-    private Map<Player, Integer> scores = new HashMap<>();
+    private Map<Player, Integer> scores = new LinkedHashMap<>();
     private boolean isStarted;
     private boolean isOpen;
     private LocalDateTime startTime;
@@ -42,19 +42,23 @@ public class GameImpl {
     }
 
     public List<Player> addPlayer(Player player) {
-        players.add(player);
-
+        if (!players.contains(player)) {
+            players.add(player);
+        }
         return players;
     }
 
     public List<Player> removePlayer(Player player) {
-        players.remove(player);
-
+        if (players.contains(player)) {
+            players.remove(player);
+        }
         return players;
     }
 
-    public List<Question> getQuestions(){
+    public List<Question> getQuestions() {
         questions = questionService.get10RandomQuestions(category);
+
+        // TODO: if questions could't be retrieved, throw an exception (choose a different category)
         return questions;
     }
 
@@ -79,18 +83,39 @@ public class GameImpl {
         int score = 0;
         Answer answer;
 
-        for (int i = 0; i < submittedAnswers.size(); i++) {
-            answer = submittedAnswers.get(i);
-            if(answer.isCorrect()) {
-                score += 10;
+        if (submittedAnswers != null && submittedAnswers.size() == 10) {
+
+            for (int i = 0; i < submittedAnswers.size(); i++) {
+                answer = submittedAnswers.get(i);
+                if (answer.isCorrect()) {
+                    score += 10;
+                }
             }
+
+            player.addXp(score);
+            player.incrementGamesPlayed();
+            gatherScores(player, score);
         }
-
-        player.addXp(score);
-        player.incrementGamesPlayed();
-        gatherScores(player, score);
-
         return score;
+    }
+
+    public Player determineWinner(Map<Player, Integer> scores) {
+
+        if (scores == null) {
+            throw new IllegalArgumentException("There are no scores.");
+        }
+        if (scores != null && scores.size() > 1) {
+            winner = findPlayerWithHighestScore(scores);
+            winner.addXp(30);
+        } else {
+            Set keys = scores.keySet();
+            winner = getTheFirstAndOnlyPlayerFromKeySet(keys);
+        }
+        return winner;
+    }
+
+    private Player getTheFirstAndOnlyPlayerFromKeySet(Set keys) {
+        return (Player) keys.toArray()[0];
     }
 
     public void end(Player player) {
@@ -106,25 +131,12 @@ public class GameImpl {
         }
     }
 
-    public Player determineWinner(Map<Player, Integer> scores) {
-
-        //TODO:
-        // Make sure all the players have submitted their answers to determine the actual winner
-
-        if (scores != null && scores.size() == players.size() && players.size() > 1) {
-            winner = Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
-
-            winner.addXp(30);
-        }
-
-        //TODO: consider not returning the winner - maybe just a bonus will do?
-        return winner;
-
-    }
-
     private Map<Player, Integer> gatherScores(Player player, int score) {
         scores.put(player, score);
-
         return scores;
+    }
+
+    private Player findPlayerWithHighestScore(Map<Player, Integer> scores) {
+        return Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 }
