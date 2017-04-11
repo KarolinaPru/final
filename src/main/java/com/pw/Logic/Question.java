@@ -9,6 +9,5 @@ import java.util.UUID;
 public interface Question {
 
     public List<Answer> getAnswers();
-    public List<Long> getIdsOfCorrectAnswers(List<Answer> answers);
 
 }

@@ -21,19 +21,20 @@ public class QuestionServiceHardcoded implements QuestionService {
 
         Question q;
 
-        for (int i = 0; i < 10; i++) {
-            q = allQuestions.get(random.nextInt(size));
-            if(!questions.contains(q)) {
-                questions.add(q);
-            } else {
-                i--;
+        if (size >= 10) {
+            for (int i = 0; i < 10; i++) {
+                q = allQuestions.get(random.nextInt(size));
+                if (!questions.contains(q)) {
+                    questions.add(q);
+                } else {
+                    i--;
+                }
             }
         }
-
         return questions;
     }
 
-    private List<Question> createQuestions(Category category) {
+    protected List<Question> createQuestions(Category category) {
         List<Question> allQuestions = new ArrayList<>();
         List<Answer> answers = new ArrayList<>();
         Answer answer1 = new AnswerImpl("1", false);

@@ -10,26 +10,56 @@ import java.util.*;
  */
 
 // Odliczanie czasu oraz wyswietlanie kolejnych pytań  beda lezec po stronie przegladarki
-@Getter
 public class GameImpl {
 
-    private static long nextAvailableId;
-    private long id = 1;
-    private Category category;
-    private Player gameOwner;
-    private Player winner;
-    private List<Player> players = new ArrayList<>();
-    private final QuestionService questionService;
-    private List<Question> questions;
-    private Map<Player, Integer> scores = new LinkedHashMap<>();
-    private boolean isStarted;
-    private boolean isOpen;
-    private LocalDateTime startTime;
+    public static long getNextAvailableId() {
+        return nextAvailableId;
+    }
 
+    public long getId() {
+        return id;
+    }
 
-    public GameImpl(Player gameOwner, Category category, QuestionService questionService) {
-        if (gameOwner == null || category == null) {
-            throw new IllegalArgumentException("The game cannot be initiated without the game admin and a category.");
+    public Category getCategory() {
+        return category;
+    }
+
+    public Player getGameOwner() {
+        return gameOwner;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public QuestionService getQuestionService() {
+        return questionService;
+    }
+
+    public Map<Player, Integer> getScores() {
+        return scores;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public
+    GameImpl(Player gameOwner, Category category, QuestionService questionService) {
+        if (gameOwner == null || category == null || questionService == null) {
+            throw new IllegalArgumentException("The game cannot be initiated.");
         }
         this.gameOwner = gameOwner;
         this.category = category;
@@ -41,22 +71,27 @@ public class GameImpl {
         players.add(gameOwner);
     }
 
-    public List<Player> addPlayer(Player player) {
+    public void addPlayer(Player player) {
         if (!players.contains(player)) {
             players.add(player);
         }
-        return players;
     }
 
-    public List<Player> removePlayer(Player player) {
-        if (players.contains(player)) {
+    public void removePlayer(Player player) {
+        if (players != null && players.contains(player)) {
             players.remove(player);
         }
-        return players;
     }
 
-    public List<Question> getQuestions() {
-        questions = questionService.get10RandomQuestions(category);
+    public List<Question> obtainQuestions() throws NoQuestionsInCategoryException {
+
+        if (questionService != null) {
+            questions = questionService.get10RandomQuestions(category);
+
+//            if (questions == null) {
+//                throw new NoQuestionsInCategoryException();
+//            }
+        }
 
         // TODO: if questions could't be retrieved, throw an exception (choose a different category)
         return questions;
@@ -120,7 +155,7 @@ public class GameImpl {
 
     public void end(Player player) {
 
-        players = removePlayer(player);
+        removePlayer(player);
 
         if (players.size() == 0) {
             isOpen = false;
@@ -139,4 +174,17 @@ public class GameImpl {
     private Player findPlayerWithHighestScore(Map<Player, Integer> scores) {
         return Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
+
+    private static long nextAvailableId;
+    private long id = 1;
+    private Category category;
+    private Player gameOwner;
+    private Player winner;
+    private List<Player> players = new ArrayList<>();
+    private final QuestionService questionService;
+    private List<Question> questions;
+    private Map<Player, Integer> scores = new LinkedHashMap<>();
+    private boolean isStarted;
+    private boolean isOpen;
+    private LocalDateTime startTime;
 }

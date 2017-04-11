@@ -20,7 +20,6 @@ public class QuestionImpl implements Question {
     private String question;
     private List<Answer> answers;
     private static long nextAvailableId;
-    @Getter
     private long id = 1;
 
 
@@ -36,20 +35,5 @@ public class QuestionImpl implements Question {
         return answers;
     }
 
-    @Override
-    public List<Long> getIdsOfCorrectAnswers(List<Answer> answers) {
-        this.answers = answers;
-
-        List<Long> correctAnswersIds = new ArrayList<>();
-
-        for (Answer answer : answers) {
-
-            if(answer.isCorrect()) {
-                correctAnswersIds.add(answer.getId());
-            }
-        }
-
-        return correctAnswersIds;
-    }
 }
 

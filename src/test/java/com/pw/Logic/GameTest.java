@@ -51,9 +51,28 @@ public class GameTest {
     }
 
     @Test
+    public void GivenQuestionerviceIsNull_WhenInstantiatingGame_ThenExceptionShouldBeThrown() {
+
+        assertThatThrownBy(() -> new GameImpl(gameOwner, category, null))
+                .isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    @Test
+    public void GivenNullListOfQuestions_WhenStartingGame_ThenExceptionhouldBeThrown() throws NoQuestionsInCategoryException {
+
+        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+
+        //TODO: Exception when questions are null
+    }
+
+    @Test
     public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
         GameImpl gameOne = new GameImpl(gameOwner, category, questionService);
+        assertThat(gameOwner).isEqualTo(gameOne.getGameOwner());
+        assertThat(category).isEqualTo(gameOne.getCategory());
+        assertThat(questionService).isEqualTo(gameOne.getQuestionService());
         assertThat(gameOne).isNotNull();
     }
 
@@ -62,7 +81,7 @@ public class GameTest {
 
         GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
 
-        assertThat(game.getPlayers().get(0).equals(gameOwner));
+        assertThat(game.getPlayers().get(0).equals(game.getGameOwner()));
         assertThat(game.getPlayers().get(1).equals(player1));
         assertThat(game.getPlayers().get(2).equals(player2));
     }
@@ -73,6 +92,7 @@ public class GameTest {
 
         assertThat(game).hasFieldOrProperty("id");
         assertThat(game.getId()).isNotNull();
+        assertThat(game.getId()).isLessThan(game.getNextAvailableId());
     }
 
     @Test
@@ -119,32 +139,21 @@ public class GameTest {
     }
 
     @Test
-    public void GivenNullListOfQuestions_WhenStartingGame_ThenItShouldNotStart(){
-
-        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(null);
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
-
-        game.start();
-
-        assertThat(game.isStarted()).isFalse();
-    }
-
-    @Test
-    public void GivenGameOwnerAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart(){
+    public void GivenGameOwnerAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart() throws NoQuestionsInCategoryException {
 
         GameImpl game = arrangePositiveGameConditions();
 
-        game.getQuestions();
+        game.obtainQuestions();
         game.start();
 
         assertThat(game.isStarted()).isTrue();
     }
 
     @Test
-    public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned() {
+    public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned() throws NoQuestionsInCategoryException {
         GameImpl game = arrangePositiveGameConditions();
 
-        game.getQuestions();
+        game.obtainQuestions();
         game.start();
 
         assertThat(game).hasFieldOrProperty("startTime");
@@ -198,7 +207,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() {
+    public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() throws NoQuestionsInCategoryException {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
 
@@ -209,7 +218,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReceiveXP(){
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReceiveXP() throws NoQuestionsInCategoryException {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
 
@@ -222,7 +231,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayersGamePlayedShouldBeUpdated(){
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayersGamePlayedShouldBeUpdated() throws NoQuestionsInCategoryException {
 
         int initialGamesPlayed = player1.getGamesPlayed();
         GameImpl game = arrangePositiveGameConditions();
@@ -242,7 +251,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenOneWithTheHighestScoreShouldBeReturned() {
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenOneWithTheHighestScoreShouldBeReturned() throws NoQuestionsInCategoryException {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
@@ -253,7 +262,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenTheyReceiveBonusOf30Xp() {
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenTheyReceiveBonusOf30Xp() throws NoQuestionsInCategoryException {
         GameImpl game = arrangePositiveGameConditions();
         getQuestionsStartGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
@@ -265,7 +274,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenSinglePlayer_WhenDeterminingWinner_ThenNoBonusIsGiven() {
+    public void GivenSinglePlayer_WhenDeterminingWinner_ThenNoBonusIsGiven() throws NoQuestionsInCategoryException {
         GameImpl game = new GameImpl(gameOwner, category, questionService);
         getQuestionsStartGameAndGetSubmittedAnswers(game);
 
@@ -279,7 +288,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenScoresAreNull_WhenDeterminingWinner_ThenExceptionIsThrown() {
+    public void GivenScoresAreNull_WhenDeterminingWinner_ThenExceptionIsThrown() throws NoQuestionsInCategoryException {
         GameImpl game = new GameImpl(gameOwner, category, questionService);
         getQuestionsStartGameAndGetSubmittedAnswers(game);
 
@@ -296,8 +305,8 @@ public class GameTest {
         scores.put(gameOwner, scoreGameOwner);
     }
 
-    private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) {
-        game.getQuestions();
+    private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) throws NoQuestionsInCategoryException {
+        game.obtainQuestions();
         game.start();
         submittedAnswers = getSubmittedAnswers();
     }
