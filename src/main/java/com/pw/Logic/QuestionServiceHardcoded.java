@@ -10,7 +10,7 @@ import java.util.Random;
 public class QuestionServiceHardcoded implements QuestionService {
 
     private Random random = new Random();
-    private Category category = new CategoryImpl("Category1", "some category");
+    private Category category = new Category("Category1", "some category");
 
     @Override
     public List<Question> get10RandomQuestions(Category category) {

@@ -10,15 +10,7 @@ import java.util.*;
  */
 
 // Odliczanie czasu oraz wyswietlanie kolejnych pytań  beda lezec po stronie przegladarki
-public class GameImpl {
-
-    public static long getNextAvailableId() {
-        return nextAvailableId;
-    }
-
-    public long getId() {
-        return id;
-    }
+public class Game {
 
     public Category getCategory() {
         return category;
@@ -34,10 +26,6 @@ public class GameImpl {
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    public QuestionService getQuestionService() {
-        return questionService;
     }
 
     public Map<Player, Integer> getScores() {
@@ -56,14 +44,10 @@ public class GameImpl {
         return startTime;
     }
 
-    public
-    GameImpl(Player gameOwner, Category category, QuestionService questionService) {
-        if (gameOwner == null || category == null || questionService == null) {
-            throw new IllegalArgumentException("The game cannot be initiated.");
-        }
+    public Game(Player gameOwner, Category category, List<Question> questions) {
         this.gameOwner = gameOwner;
         this.category = category;
-        this.questionService = questionService;
+        this.questions = questions;
 
         id = nextAvailableId;
         nextAvailableId++;
@@ -78,23 +62,10 @@ public class GameImpl {
     }
 
     public void removePlayer(Player player) {
+        // tylko zanim state == started
         if (players != null && players.contains(player)) {
             players.remove(player);
         }
-    }
-
-    public List<Question> obtainQuestions() throws NoQuestionsInCategoryException {
-
-        if (questionService != null) {
-            questions = questionService.get10RandomQuestions(category);
-
-//            if (questions == null) {
-//                throw new NoQuestionsInCategoryException();
-//            }
-        }
-
-        // TODO: if questions could't be retrieved, throw an exception (choose a different category)
-        return questions;
     }
 
     public void start() {
@@ -149,7 +120,7 @@ public class GameImpl {
         return winner;
     }
 
-    private Player getTheFirstAndOnlyPlayerFromKeySet(Set keys) {
+        private Player getTheFirstAndOnlyPlayerFromKeySet(Set keys) {
         return (Player) keys.toArray()[0];
     }
 
@@ -175,13 +146,14 @@ public class GameImpl {
         return Collections.max(scores.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
+    @Getter
     private static long nextAvailableId;
+    @Getter
     private long id = 1;
     private Category category;
     private Player gameOwner;
     private Player winner;
     private List<Player> players = new ArrayList<>();
-    private final QuestionService questionService;
     private List<Question> questions;
     private Map<Player, Integer> scores = new LinkedHashMap<>();
     private boolean isStarted;

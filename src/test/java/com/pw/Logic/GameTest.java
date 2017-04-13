@@ -29,57 +29,23 @@ public class GameTest {
     @Mock
     private List<Question> questions;
     @Mock
-    private QuestionService questionService;
-    @Mock
     private Category category;
     private ArrayList<Answer> submittedAnswers;
-    private ArrayList<Answer> submittedAnswers2;
     private Map<Player, Integer> scores;
-
-    @Test
-    public void GivenNoPlayer_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
-
-        assertThatThrownBy(() -> new GameImpl(null, category, questionService))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void GivenNoCategory_WhenInstantiatingGame_ThenIllegalArgumentExceptionExceptionShouldBeThrown(){
-
-        assertThatThrownBy(() -> new GameImpl(gameOwner, null, questionService))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void GivenQuestionerviceIsNull_WhenInstantiatingGame_ThenExceptionShouldBeThrown() {
-
-        assertThatThrownBy(() -> new GameImpl(gameOwner, category, null))
-                .isInstanceOf(IllegalArgumentException.class);
-
-    }
-
-    @Test
-    public void GivenNullListOfQuestions_WhenStartingGame_ThenExceptionhouldBeThrown() throws NoQuestionsInCategoryException {
-
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
-
-        //TODO: Exception when questions are null
-    }
-
+    
     @Test
     public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 
-        GameImpl gameOne = new GameImpl(gameOwner, category, questionService);
+        Game gameOne = new Game(gameOwner, category, questions);
         assertThat(gameOwner).isEqualTo(gameOne.getGameOwner());
         assertThat(category).isEqualTo(gameOne.getCategory());
-        assertThat(questionService).isEqualTo(gameOne.getQuestionService());
         assertThat(gameOne).isNotNull();
     }
 
     @Test
     public void GivenCreatedGameWithGameOwner_WhenNewPlayersAreJoining_ThenTheyShouldBeAddedToListOfGamePlayers() {
 
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+        Game game = arrangeGameOfOwnerAndTwoPlayers();
 
         assertThat(game.getPlayers().get(0).equals(game.getGameOwner()));
         assertThat(game.getPlayers().get(1).equals(player1));
@@ -87,8 +53,8 @@ public class GameTest {
     }
 
     @Test
-    public void GivenOwnerAndCategory_WhenCreatingNewGame_ThenIdShouldBeAssignedAndNotBeNull(){
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+    public void GivenOwnerAndCategory_WhenCreatingNewGame_ThenIdShouldBeAssignedAndNotBeNull() {
+        Game game = arrangeGameOfOwnerAndTwoPlayers();
 
         assertThat(game).hasFieldOrProperty("id");
         assertThat(game.getId()).isNotNull();
@@ -96,16 +62,16 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameIsCreated_WhenCheckedIfIsOpen_ThenTrueShouldBeReturned(){
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+    public void GivenGameIsCreated_WhenCheckedIfIsOpen_ThenTrueShouldBeReturned() {
+        Game game = arrangeGameOfOwnerAndTwoPlayers();
 
         assertThat(game.isOpen()).isTrue();
     }
 
     @Test
-    public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded(){
+    public void GivenListOf4Players_WhenPlayer2IsRemoved_ThenListShouldContain3PlayersAndPlayer2ShouldBeExcluded() {
 
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+        Game game = arrangeGameOfOwnerAndTwoPlayers();
         game.addPlayer(player3);
         int playersBeforeRemoval = game.getPlayers().size();
 
@@ -119,7 +85,7 @@ public class GameTest {
 
     @Test
     public void GivenGameWithoutOwner_WhenStarting_ThenGameShouldNotStart() {
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
+        Game game = arrangeGameOfOwnerAndTwoPlayers();
 
         game.removePlayer(gameOwner);
         game.start();
@@ -128,52 +94,28 @@ public class GameTest {
     }
 
     @Test
-    public void GivenFewerThan10Questions_WhenStartingGame_ThenItShouldNotStart(){
+    public void GivenGameOwnerAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart() {
 
-        arrangeListOf9Questions();
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
-
-        game.start();
-
-        assertThat(game.isStarted()).isFalse();
-    }
-
-    @Test
-    public void GivenGameOwnerAnd10QuestionsInCategory_WhenStartingGame_ThenItShouldStart() throws NoQuestionsInCategoryException {
-
-        GameImpl game = arrangePositiveGameConditions();
-
-        game.obtainQuestions();
+        Game game = arrangePositiveGameConditions();
+        
         game.start();
 
         assertThat(game.isStarted()).isTrue();
     }
 
     @Test
-    public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned() throws NoQuestionsInCategoryException {
-        GameImpl game = arrangePositiveGameConditions();
-
-        game.obtainQuestions();
+    public void GivenGameConditionsAreMet_WhenStarting_ThenStartTimeShouldBeAssigned()  {
+        Game game = arrangePositiveGameConditions();
+        
         game.start();
 
         assertThat(game).hasFieldOrProperty("startTime");
         assertThat(game.getStartTime()).isNotNull();
     }
-
-    @Test
-    public void GivenGameConditionsAreNotMet_WhenStarting_ThenStartTimeShouldBeNull() {
-        arrangeListOf9Questions();
-        GameImpl game = arrangeGameOfOwnerAndTwoPlayers();
-
-        game.start();
-
-        assertThat(game).hasFieldOrProperty("startTime");
-        assertThat(game.getStartTime()).isNull();
-    }
-
+    
     @Test
     public void GivenPlayer_WhenEndingGame_ThenPlayerShouldBeRemoved() {
-        GameImpl game = arrangePositiveGameConditions();
+        Game game = arrangePositiveGameConditions();
         game.start();
 
         game.end(player1);
@@ -183,7 +125,7 @@ public class GameTest {
 
     @Test
     public void GivenAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenFalseShouldBeReturned() {
-        GameImpl game = arrangePositiveGameConditions();
+        Game game = arrangePositiveGameConditions();
         game.start();
 
         game.end(player1);
@@ -196,7 +138,7 @@ public class GameTest {
 
     @Test
     public void GivenNotAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenTrueShouldBeReturned() {
-        GameImpl game = arrangePositiveGameConditions();
+        Game game = arrangePositiveGameConditions();
         game.start();
 
         game.end(player1);
@@ -207,9 +149,9 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() throws NoQuestionsInCategoryException {
-        GameImpl game = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+    public void GivenGameWasStarted_WhenEvaluatingUsersAnswers_ThenCorrectScoreShouldBeReturned() {
+        Game game = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game);
 
         int expectedScore = 60;
         int actualScore = game.evaluateAnswers(player1, submittedAnswers);
@@ -218,9 +160,9 @@ public class GameTest {
     }
 
     @Test
-    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReceiveXP() throws NoQuestionsInCategoryException {
-        GameImpl game = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayerShouldReceiveXP() {
+        Game game = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game);
 
         int initialXp = player1.getXp();
         int score = game.evaluateAnswers(player1, submittedAnswers);
@@ -231,16 +173,16 @@ public class GameTest {
     }
 
     @Test
-    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayersGamePlayedShouldBeUpdated() throws NoQuestionsInCategoryException {
+    public void GivenEvaluatingAnswers_WhenCalled_ThenPlayersGamePlayedShouldBeUpdated() {
 
         int initialGamesPlayed = player1.getGamesPlayed();
-        GameImpl game = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+        Game game = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game);
 
         game.evaluateAnswers(player1, submittedAnswers);
 
-        GameImpl game2 = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game2);
+        Game game2 = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game2);
 
         game2.evaluateAnswers(player1, submittedAnswers);
 
@@ -251,9 +193,9 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenOneWithTheHighestScoreShouldBeReturned() throws NoQuestionsInCategoryException {
-        GameImpl game = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenOneWithTheHighestScoreShouldBeReturned() {
+        Game game = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
 
         Player actualWinner = game.determineWinner(scores);
@@ -262,9 +204,9 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenTheyReceiveBonusOf30Xp() throws NoQuestionsInCategoryException {
-        GameImpl game = arrangePositiveGameConditions();
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+    public void GivenAtLeast2Players_WhenDeterminingWinner_ThenTheyReceiveBonusOf30Xp() {
+        Game game = arrangePositiveGameConditions();
+        startGameAndGetSubmittedAnswers(game);
         arrangeMapOfPlayersScores(game);
 
         int winnersXpAfterEvaluation = player1.getXp();
@@ -274,10 +216,9 @@ public class GameTest {
     }
 
     @Test
-    public void GivenSinglePlayer_WhenDeterminingWinner_ThenNoBonusIsGiven() throws NoQuestionsInCategoryException {
-        GameImpl game = new GameImpl(gameOwner, category, questionService);
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
-
+    public void GivenSinglePlayer_WhenDeterminingWinner_ThenNoBonusIsGiven() {
+        Game game = new Game(gameOwner, category, questions);
+        startGameAndGetSubmittedAnswers(game);
         game.evaluateAnswers(gameOwner, submittedAnswers);
 
         int xpAfterEvaluation = gameOwner.getXp();
@@ -288,14 +229,14 @@ public class GameTest {
     }
 
     @Test
-    public void GivenScoresAreNull_WhenDeterminingWinner_ThenExceptionIsThrown() throws NoQuestionsInCategoryException {
-        GameImpl game = new GameImpl(gameOwner, category, questionService);
-        getQuestionsStartGameAndGetSubmittedAnswers(game);
+    public void GivenScoresAreNull_WhenDeterminingWinner_ThenExceptionIsThrown() {
+        Game game = new Game(gameOwner, category, questions);
+        startGameAndGetSubmittedAnswers(game);
 
         assertThatThrownBy(() -> game.determineWinner(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private void arrangeMapOfPlayersScores(GameImpl game) {
+    private void arrangeMapOfPlayersScores(Game game) {
         int scorePlayer1 = game.evaluateAnswers(player1, submittedAnswers);
         int scoreGameOwner = game.evaluateAnswers(gameOwner, getSubmittedAnswers2());
 
@@ -305,8 +246,7 @@ public class GameTest {
         scores.put(gameOwner, scoreGameOwner);
     }
 
-    private void getQuestionsStartGameAndGetSubmittedAnswers(GameImpl game) throws NoQuestionsInCategoryException {
-        game.obtainQuestions();
+    private void startGameAndGetSubmittedAnswers(Game game) {
         game.start();
         submittedAnswers = getSubmittedAnswers();
     }
@@ -342,22 +282,16 @@ public class GameTest {
         return submittedAnswers;
     }
 
-    private GameImpl arrangePositiveGameConditions() {
+    private Game arrangePositiveGameConditions() {
         Mockito.when(questions.size()).thenReturn(10);
-        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(questions);
         return arrangeGameOfOwnerAndTwoPlayers();
     }
 
-    private GameImpl arrangeGameOfOwnerAndTwoPlayers() {
-        GameImpl game = new GameImpl(gameOwner, category, questionService);
+    private Game arrangeGameOfOwnerAndTwoPlayers() {
+        Game game = new Game(gameOwner, category, questions);
 
         game.addPlayer(player1);
         game.addPlayer(player2);
         return game;
-    }
-
-    private void arrangeListOf9Questions() {
-        Mockito.when(questions.size()).thenReturn(9);
-        Mockito.when(questionService.get10RandomQuestions(any())).thenReturn(questions);
     }
 }

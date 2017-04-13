@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class QuestionServiceHardcodedTest {
     private QuestionServiceHardcoded questionService = new QuestionServiceHardcoded();
-    private Category category = new CategoryImpl("Category 1", "Some category");
+    private Category category = new Category("Category 1", "Some category");
 
     @Test
     public void Given2ListsOfQuestions_WhenCheckedForEquality_ThenFalseShouldBeReturned() {
