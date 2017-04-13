@@ -1,7 +1,6 @@
 package com.pw.Logic;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Matchers.any;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,10 +61,10 @@ public class GameTest {
     }
 
     @Test
-    public void GivenGameIsCreated_WhenCheckedIfIsOpen_ThenTrueShouldBeReturned() {
+    public void GivenGameIsCreated_WhenCheckedForGameStateCreated_ThenTrueShouldBeReturned() {
         Game game = arrangeGameOfOwnerAndTwoPlayers();
 
-        assertThat(game.isOpen()).isTrue();
+        assertThat(game.getCurrentState() == GameState.CREATED).isTrue();
     }
 
     @Test
@@ -90,7 +89,7 @@ public class GameTest {
         game.removePlayer(gameOwner);
         game.start();
 
-        assertThat(game.isStarted()).isFalse();
+        assertThat(game.getCurrentState() == GameState.STARTED).isFalse();
     }
 
     @Test
@@ -100,7 +99,7 @@ public class GameTest {
         
         game.start();
 
-        assertThat(game.isStarted()).isTrue();
+        assertThat(game.getCurrentState() == GameState.STARTED).isTrue();
     }
 
     @Test
@@ -124,7 +123,7 @@ public class GameTest {
     }
 
     @Test
-    public void GivenAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenFalseShouldBeReturned() {
+    public void GivenAllPlayersEndedGame_WhenCheckingIfIsCalculatingScore_ThenFalseShouldBeReturned() {
         Game game = arrangePositiveGameConditions();
         game.start();
 
@@ -132,20 +131,18 @@ public class GameTest {
         game.end(player2);
         game.end(gameOwner);
 
-        assertThat(game.isOpen()).isFalse();
-        assertThat(game.isStarted()).isFalse();
+        assertThat(game.getCurrentState() == GameState.CALCULATING_SCORE).isFalse();
     }
 
     @Test
-    public void GivenNotAllPlayersEndedGame_WhenCheckingIfIsOpenAndStarted_ThenTrueShouldBeReturned() {
+    public void GivenNotAllPlayersEndedGame_WhenCheckingIfIsCalculatingScore_ThenTrueShouldBeReturned() {
         Game game = arrangePositiveGameConditions();
         game.start();
 
         game.end(player1);
         game.end(gameOwner);
 
-        assertThat(game.isOpen()).isTrue();
-        assertThat(game.isStarted()).isTrue();
+        assertThat(game.getCurrentState() == GameState.CALCULATING_SCORE).isTrue();
     }
 
     @Test

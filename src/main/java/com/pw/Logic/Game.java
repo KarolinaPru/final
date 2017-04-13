@@ -1,6 +1,6 @@
 package com.pw.Logic;
 
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,14 +32,6 @@ public class Game {
         return scores;
     }
 
-    public boolean isStarted() {
-        return isStarted;
-    }
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -51,7 +43,6 @@ public class Game {
 
         id = nextAvailableId;
         nextAvailableId++;
-        isOpen = true;
         players.add(gameOwner);
     }
 
@@ -62,7 +53,6 @@ public class Game {
     }
 
     public void removePlayer(Player player) {
-        // tylko zanim state == started
         if (players != null && players.contains(player)) {
             players.remove(player);
         }
@@ -71,16 +61,14 @@ public class Game {
     public void start() {
 
         if (questions == null || questions.size() < 10) {
-            isStarted = false;
             return;
         }
 
         if (!players.contains(gameOwner)) {
-            isStarted = false;
             return;
         }
 
-        isStarted = true;
+        currentState = GameState.STARTED;
         startTime = LocalDateTime.now();
     }
 
@@ -129,11 +117,9 @@ public class Game {
         removePlayer(player);
 
         if (players.size() == 0) {
-            isOpen = false;
-            isStarted = false;
+            currentState = GameState.ENDED;
         } else {
-            isOpen = true;
-            isStarted = true;
+            currentState = GameState.CALCULATING_SCORE;
         }
     }
 
@@ -156,7 +142,7 @@ public class Game {
     private List<Player> players = new ArrayList<>();
     private List<Question> questions;
     private Map<Player, Integer> scores = new LinkedHashMap<>();
-    private boolean isStarted;
-    private boolean isOpen;
     private LocalDateTime startTime;
+    @Getter
+    private GameState currentState = GameState.CREATED;
 }
