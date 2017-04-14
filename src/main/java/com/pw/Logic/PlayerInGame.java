@@ -1,10 +1,13 @@
 package com.pw.Logic;
 
+import com.pw.Logic.Exceptions.IllegalTimeOfAnswerSubmissionException;
+
 import java.util.List;
 
 /**
  * Created by Karolina on 14.04.2017.
  */
+// Ultimately PlayerInGame will be created based on the Player and Game retrieved from the DB in a REST API call
 public class PlayerInGame extends Player {
     private final Game game;
     private final boolean isOwner;
@@ -14,19 +17,19 @@ public class PlayerInGame extends Player {
         this.game = game;
         this.isOwner = isOwner;
 
-        game.addPlayer(this);
+        game.addPlayer(this); // TODO: +1UT (check if called)
     }
 
     public void startGame() {
         if (this.isOwner)
-            game.start();
+            game.start();  // TODO: +2UT
     }
 
-    public void submitAnswers(List<Answer> answers) {
+    public void submitAnswers(List<Answer> answers) throws IllegalTimeOfAnswerSubmissionException {
         if (answers == null) {
-            return;
+            return; // TODO: +1UT (check if not called)
         }
 
-        game.evaluateAnswers(this, answers);
+        game.evaluateAnswers(this, answers); // TODO: +1UT (check if called)
     }
 }

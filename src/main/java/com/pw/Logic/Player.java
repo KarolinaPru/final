@@ -6,32 +6,21 @@ import lombok.Getter;
 /**
  * Created by Karolina on 20.03.2017.
  */
-@EqualsAndHashCode
+@Getter @EqualsAndHashCode
 public class Player {
-    @Getter
     private final String name;
-    @Getter
     private int xp;
-    @Getter
     private int gamesPlayed;
 
     public Player(String name) {
         this.name = name;
     }
 
-    public int getXp() {
-        return xp;
-    }
-
-    public int getGamesPlayed(){
-        return gamesPlayed;
-    }
-
     protected void addXp(int xp) {
-        this.xp += xp;
+        this.xp += xp; // TODO: +1UT
     }
 
     protected void incrementGamesPlayed() {
-        this.gamesPlayed += 1;
+        this.gamesPlayed += 1; // TODO: +1UT
     }
 }
