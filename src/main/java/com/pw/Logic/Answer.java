@@ -1,13 +1,20 @@
 package com.pw.Logic;
 
-import java.util.UUID;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
- * Created by karol on 25.03.2017.
+ * Created by Karolina on 25.03.2017.
  */
-public interface Answer {
+@Getter
+@EqualsAndHashCode
+public class Answer {
+    private final String answer;
+    private final boolean isCorrect;
 
-    public boolean isCorrect();
+    public Answer(String answer, boolean isCorrect) {
+        this.answer = answer;
+        this.isCorrect = isCorrect;
+    }
 
-    public long getId();
 }

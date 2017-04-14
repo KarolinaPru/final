@@ -1,13 +1,28 @@
 package com.pw.Logic;
 
+import groovy.transform.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.util.List;
-import java.util.UUID;
 
 /**
- * Created by Karolina on 25.03.2017.
+ * Created by Karolina on 24.03.2017.
  */
-public interface Question {
+@Getter
+@EqualsAndHashCode
+public class Question {
+    private final Category category;
+    private final String question;
+    private final List<Answer> answers;
 
-    public List<Answer> getAnswers();
+    public Question(String question, Category category, List<Answer> answers) {
+        this.category = category;
+        this.question = question;
+        this.answers = answers;
+    }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
 }
+

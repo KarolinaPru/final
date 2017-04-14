@@ -34,31 +34,31 @@ public class QuestionServiceHardcoded implements QuestionService {
         return questions;
     }
 
-    protected List<Question> createQuestions(Category category) {
+    private List<Question> createQuestions(Category category) {
         List<Question> allQuestions = new ArrayList<>();
         List<Answer> answers = new ArrayList<>();
-        Answer answer1 = new AnswerImpl("1", false);
-        Answer answer2 = new AnswerImpl("2", true);
-        Answer answer3 = new AnswerImpl("3", false);
-        Answer answer4 = new AnswerImpl("4", false);
+        Answer answer1 = new Answer("1", false);
+        Answer answer2 = new Answer("2", true);
+        Answer answer3 = new Answer("3", false);
+        Answer answer4 = new Answer("4", false);
 
         answers.add(answer1);
         answers.add(answer2);
         answers.add(answer3);
         answers.add(answer4);
 
-        Question question1 = new QuestionImpl("Question 1", category, answers);
-        Question question2 = new QuestionImpl("Question 2", category, answers);
-        Question question3 = new QuestionImpl("Question 3", category, answers);
-        Question question4 = new QuestionImpl("Question 4", category, answers);
-        Question question5 = new QuestionImpl("Question 5", category, answers);
-        Question question6 = new QuestionImpl("Question 6", category, answers);
-        Question question7 = new QuestionImpl("Question 7", category, answers);
-        Question question8 = new QuestionImpl("Question 8", category, answers);
-        Question question9 = new QuestionImpl("Question 9", category, answers);
-        Question question10 = new QuestionImpl("Question 10", category, answers);
-        Question question11 = new QuestionImpl("Question 11", category, answers);
-        Question question12 = new QuestionImpl("Question 12", category, answers);
+        Question question1 = new Question("Question 1", category, answers);
+        Question question2 = new Question("Question 2", category, answers);
+        Question question3 = new Question("Question 3", category, answers);
+        Question question4 = new Question("Question 4", category, answers);
+        Question question5 = new Question("Question 5", category, answers);
+        Question question6 = new Question("Question 6", category, answers);
+        Question question7 = new Question("Question 7", category, answers);
+        Question question8 = new Question("Question 8", category, answers);
+        Question question9 = new Question("Question 9", category, answers);
+        Question question10 = new Question("Question 10", category, answers);
+        Question question11 = new Question("Question 11", category, answers);
+        Question question12 = new Question("Question 12", category, answers);
 
         allQuestions.add(question1);
         allQuestions.add(question2);
