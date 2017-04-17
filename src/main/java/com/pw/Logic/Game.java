@@ -47,11 +47,11 @@ public class Game {
             throw new ScoreCannotBeRetrievedBeforeGameIsClosedException();
         }
 
-        if (winnerIsNotDetermined() && scores.size() > 0) { // TODO: 1UT
-            Score winningScore = findWinningScore(); // TODO: 1UT
-            winningScore.markAsHighest(); // TODO: 1UT
+        if (winnerIsNotDetermined() && scores.size() > 0) {
+            Score winningScore = findWinningScore();
+            winningScore.markAsHighest();
         }
-        return scores; // TODO: 1UT
+        return scores;
     }
 
     protected void addPlayer(Player player) {
@@ -73,18 +73,18 @@ public class Game {
             throw new IllegalTimeOfAnswerSubmissionException();
         }
 
-        if (scores.stream().filter(score -> score.getPlayer().equals(player)).count() > 0) {
+        if (playersScoreIsAlreadyAddedToScores(player)) {
             return;
         }
 
-        Score score = new Score(player); // TODO (optional): 3UT (only if score is injected or created by factory (which also should be constructor-injected))
+        Score score = new Score(player);
         score.evaluateAnswers(submittedAnswers);
         scores.add(score);
     }
 
     private void validateNumberOfQuestions(List<Question> questions) throws IllegalNumberOfQuestionsException {
         if (questions.size() != appropriateNumberOfQuestions) {
-            throw new IllegalNumberOfQuestionsException(); // TODO: +xUT (check if thrown, check if category and questions were assigned)
+            throw new IllegalNumberOfQuestionsException();
         }
     }
 
@@ -95,4 +95,9 @@ public class Game {
     private Score findWinningScore() {
         return scores.stream().sorted(Comparator.comparingInt(Score::getPoints).reversed()).findFirst().get();
     }
+
+    private boolean playersScoreIsAlreadyAddedToScores(Player player) {
+        return scores.stream().filter(score -> score.getPlayer().equals(player)).count() > 0;
+    }
+
 }

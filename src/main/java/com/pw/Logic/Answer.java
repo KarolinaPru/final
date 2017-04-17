@@ -16,5 +16,4 @@ public class Answer {
         this.answer = answer;
         this.isCorrect = isCorrect;
     }
-
 }

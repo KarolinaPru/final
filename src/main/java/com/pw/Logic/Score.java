@@ -1,20 +1,16 @@
 package com.pw.Logic;
 
-
 import lombok.Getter;
-
 import java.util.List;
 
 /**
  * Created by Karolina on 14.04.2017.
  */
+@Getter
 public class Score {
 
-    @Getter
     private final Player player;
-    @Getter
     private boolean isHighest;
-    @Getter
     private int points;
 
     protected Score(Player player) {
