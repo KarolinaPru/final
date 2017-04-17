@@ -1,17 +1,17 @@
 package com.pw.Logic;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.pw.Logic.Exceptions.IllegalNumberOfQuestionsException;
+import com.pw.Logic.Exceptions.ScoreCannotBeRetrievedBeforeGameIsClosedException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Karolina on 25.03.2017.
@@ -19,7 +19,11 @@ import java.util.Map;
 @RunWith(MockitoJUnitRunner.class)
 public class GameTest {
 
-//    private Player gameOwner = new Player("Zenek");
+    private Category category;
+    private List<Question> questions;
+    private GameStateMachine gameStateMachine;
+
+    //    private Player gameOwner = new Player("Zenek");
 //    private Player player1 = new Player("Janek");
 //    @Mock
 //    private Player player2;
@@ -32,6 +36,55 @@ public class GameTest {
 //    private ArrayList<Answer> submittedAnswers;
 //    private Map<Player, Integer> scores;
 //
+    @Test
+    public void givenCategoryQuestionsAndNotClosedGameStatus_WhenGetScoresIsCalled_ThenScoresAreNotNull() throws IllegalNumberOfQuestionsException, ScoreCannotBeRetrievedBeforeGameIsClosedException {
+        // http://www.vogella.com/tutorials/Mockito/article.html#mock-object-generation
+
+        givenMockedCategoryQuestionsAndGameStateMachine();
+        given10Questions();
+        Game game = givenGameWithCategoryQuestionsAndStateMachine();
+        givenGameStateIsClosed();
+
+        List<Score> scores = game.getScores();
+
+        assertThat(scores).isNotNull();
+    }
+
+    @Test
+    public void givenGameStateIsClosed_WhenGetScoresIsCalled_ThenExceptionIsThrown() throws ScoreCannotBeRetrievedBeforeGameIsClosedException, IllegalNumberOfQuestionsException {
+        givenMockedCategoryQuestionsAndGameStateMachine();
+        given10Questions();
+        Game game = givenGameWithCategoryQuestionsAndStateMachine();
+        givenGameStateIsNotClosed();
+
+        assertThatThrownBy(() -> game.getScores()).isInstanceOf(ScoreCannotBeRetrievedBeforeGameIsClosedException.class);
+
+    }
+
+
+    private Game givenGameWithCategoryQuestionsAndStateMachine() throws IllegalNumberOfQuestionsException {
+        return new Game(category, questions, gameStateMachine);
+    }
+
+    private void
+    givenGameStateIsNotClosed() {
+        when(gameStateMachine.gameIsClosed()).thenReturn(false);
+    }
+
+    private void givenGameStateIsClosed() {
+        when(gameStateMachine.gameIsClosed()).thenReturn(true);
+    }
+
+    private void given10Questions() {
+        when(questions.size()).thenReturn(10);
+    }
+
+    private void givenMockedCategoryQuestionsAndGameStateMachine() {
+        category = mock(Category.class);
+        questions = mock(List.class);
+        gameStateMachine = mock(GameStateMachine.class);
+    }
+
 //    @Test
 //    public void GivenPlayerAndCategory_WhenInstantiatingGame_ThenItShouldNotBeNull() {
 //
