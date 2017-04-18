@@ -25,12 +25,12 @@ public class IntegrationTest {
         QuestionService service = new QuestionServiceHardcoded(); // should get questions for a given category
         GameStateMachine gsm = mock(GameStateMachine.class);
         Game game = new Game(testCategory, service.get10RandomQuestions(testCategory), gsm);
-        PlayerInGame playerOne = new PlayerInGame("Player 1", game, true);
+        PlayerInGame playerOne = new PlayerInGame("Player 1", game);
 
         // Third API call (Player joins)
-        PlayerInGame playerTwo = new PlayerInGame("Player 2", game, false);
+        PlayerInGame playerTwo = new PlayerInGame("Player 2", game);
         // Fourth API call (Player joins)
-        PlayerInGame playerThree = new PlayerInGame("Player 3", game, false);
+        PlayerInGame playerThree = new PlayerInGame("Player 3", game);
 
         // Fifth API call (Owner starts the game)
         playerOne.startGame();
@@ -52,6 +52,9 @@ public class IntegrationTest {
                 .get()
                 .getPlayer();
 
+        assertThat(playerOne.isOwner()).isTrue();
+        assertThat(playerTwo.isOwner()).isFalse();
+        assertThat(playerThree.isOwner()).isFalse();
         assertThat(actualWinner).isEqualTo(playerTwo);
         assertThat(actualWinner.getXp()).isEqualTo(6 * 10 + 30); // 6 correct answers and a bonus
     }

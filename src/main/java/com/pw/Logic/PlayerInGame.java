@@ -1,6 +1,7 @@
 package com.pw.Logic;
 
 import com.pw.Logic.Exceptions.IllegalTimeOfAnswerSubmissionException;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -8,28 +9,34 @@ import java.util.List;
  * Created by Karolina on 14.04.2017.
  */
 // Ultimately PlayerInGame will be created based on the Player and Game retrieved from the DB in a REST API call
+@Getter
 public class PlayerInGame extends Player {
     private final Game game;
     private final boolean isOwner;
 
-    public PlayerInGame(String name, Game game, boolean isOwner) {
+    public PlayerInGame(String name, Game game) {
         super(name);
         this.game = game;
-        this.isOwner = isOwner;
 
-        game.addPlayer(this); // TODO: +1UT (check if called)
+        if(game.getPlayers().size() == 0) {
+            this.isOwner = true;
+        } else {
+            this.isOwner = false;
+        }
+
+        game.addPlayer(this);
     }
 
     public void startGame() {
         if (this.isOwner)
-            game.start();  // TODO: +2UT
+            game.start();
     }
 
     public void submitAnswers(List<Answer> answers) throws IllegalTimeOfAnswerSubmissionException {
         if (answers == null) {
-            return; // TODO: +1UT (check if not called)
+            return;
         }
 
-        game.evaluateAnswers(this, answers); // TODO: +1UT (check if called)
+        game.evaluateAnswers(this, answers);
     }
 }
