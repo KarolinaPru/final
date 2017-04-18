@@ -5,13 +5,9 @@ import com.pw.Logic.Exceptions.IllegalTimeOfAnswerSubmissionException;
 import com.pw.Logic.Exceptions.ScoreCannotBeRetrievedBeforeGameIsClosedException;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.pw.Logic.GameState.CLOSED;
-import static com.pw.Logic.GameState.EVALUATING_ANSWERS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 

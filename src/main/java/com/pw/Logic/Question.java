@@ -20,9 +20,5 @@ public class Question {
         this.question = question;
         this.answers = answers;
     }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
 }
 
