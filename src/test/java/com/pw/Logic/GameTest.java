@@ -74,6 +74,7 @@ public class GameTest {
 
         assertThat(game.getCategory()).isEqualTo(category);
         assertThat(game.getQuestions()).isEqualTo(questions);
+        verify(gameStateMachine, times(1)).determineCurrentState();
         assertThat(scores).isNotNull();
     }
 
@@ -138,6 +139,8 @@ public class GameTest {
 
         scores = game.getScores();
 
+        verify(gameStateMachine, atLeast(2)).determineCurrentState();
+        verify(gameStateMachine, times(1)).start();
         assertThat(game.getPlayers()).contains(player1);
         assertThat(game.getPlayers()).contains(player2);
         assertThat(scores.size()).isEqualTo(2);
