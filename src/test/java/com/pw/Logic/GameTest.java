@@ -3,7 +3,6 @@ package com.pw.Logic;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
-
 import com.pw.Logic.Exceptions.IllegalNumberOfQuestionsException;
 import com.pw.Logic.Exceptions.IllegalTimeOfAnswerSubmissionException;
 import com.pw.Logic.Exceptions.ScoreCannotBeRetrievedBeforeGameIsClosedException;

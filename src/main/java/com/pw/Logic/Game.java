@@ -5,6 +5,7 @@ import com.pw.Logic.Exceptions.IllegalTimeOfAnswerSubmissionException;
 import com.pw.Logic.Exceptions.ScoreCannotBeRetrievedBeforeGameIsClosedException;
 import lombok.*;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class Game {
 
         this.category = category;
         this.questions = questions;
-        this.gameStateMachine = new GameStateMachine(appropriateNumberOfQuestions);
+        this.gameStateMachine = new GameStateMachine(appropriateNumberOfQuestions, Clock.systemUTC());
     }
 
     // Constructor for testing purposes (a solution to time-related issues)
