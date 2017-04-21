@@ -1,11 +1,7 @@
 package com.pw.Logic;
 
 import org.junit.Test;
-import org.mockito.Mockito;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Karolina on 18.04.2017.

@@ -17,10 +17,10 @@ public class Player {
     }
 
     protected void addXp(int xp) {
-        this.xp += xp; // TODO: +1UT
+        this.xp += xp;
     }
 
     protected void incrementGamesPlayed() {
-        this.gamesPlayed += 1; // TODO: +1UT
+        this.gamesPlayed += 1;
     }
 }
